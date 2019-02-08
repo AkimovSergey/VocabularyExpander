@@ -4,37 +4,40 @@ import QtQuick.Controls 1.4
 import QtQuick.Window 2.2
 
 Window {
+    id: window
     visible: true
     width: 480
     height: 320
     title: qsTr("VocabularyExpander")
-    Rectangle{
-              anchors.margins: 10
-              color: "transparent"
-        GridLayout {
 
-            id: grid
-            columns: 1
-            rows: 3
-            anchors.fill: parent
+    Column{
+        id: column
+        anchors.left: parent.left
+        anchors.leftMargin: 0
+        anchors.right: parent.right
+        anchors.rightMargin: 0
 
-            TextArea{
-                anchors.fill: parent
-                id: text_from
-            }
-
-            RowLayout{
-            Button {
-                id: button
-            }
-            }
-
-            TextArea{
-                anchors.fill: parent
-                id: text_to
-            }
+        TextArea {
+            id: ta_from
 
         }
+
+    Row{
+    Button {
+        id: bt_check
+        text: qsTr("Check")
+    }
+    Button {
+        Layout.rightMargin: 3
+        id: bt_tip
+        text: qsTr("Tip")
+    }
+    }
+
+    TextArea {
+        id: ta_to
+    }
     }
 
 }
+
