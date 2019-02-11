@@ -1,2 +1,0 @@
-# VocabularyExpander
-VocabularyExpander
