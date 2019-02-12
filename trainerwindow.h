@@ -1,13 +1,13 @@
 #ifndef TRAINERWINDOW_H
 #define TRAINERWINDOW_H
 
-#include <QMainWindow>
+#include <QDialog>
 
 namespace Ui {
 class TrainerWindow;
 }
 
-class TrainerWindow : public QMainWindow
+class TrainerWindow : public QDialog
 {
     Q_OBJECT
 

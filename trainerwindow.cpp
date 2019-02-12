@@ -2,7 +2,7 @@
 #include "ui_trainerwindow.h"
 
 TrainerWindow::TrainerWindow(QWidget *parent) :
-    QMainWindow(parent),
+    QDialog(parent),
     ui(new Ui::TrainerWindow)
 {
     ui->setupUi(this);
