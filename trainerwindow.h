@@ -15,6 +15,11 @@ public:
     explicit TrainerWindow(QWidget *parent = nullptr);
     ~TrainerWindow();
 
+private slots:
+    void on_check_clicked();
+
+    void on_pushButton_clicked();
+
 private:
     Ui::TrainerWindow *ui;
 };

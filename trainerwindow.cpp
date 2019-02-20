@@ -12,3 +12,13 @@ TrainerWindow::~TrainerWindow()
 {
     delete ui;
 }
+
+void TrainerWindow::on_check_clicked()
+{
+
+}
+
+void TrainerWindow::on_pushButton_clicked()
+{
+
+}
