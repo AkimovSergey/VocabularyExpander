@@ -3,7 +3,7 @@
 # Project created by QtCreator 2019-02-12T04:28:48
 #
 #-------------------------------------------------
-
+CONFIG += c++17
 QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -26,13 +26,28 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        trainerwindow.cpp
+        trainerwindow.cpp \
+    dictionary.cpp \
+    word.cpp \
+    trayicon.cpp \
+    globals.cpp \
+    deliveryboy.cpp \
+    settings.cpp \
+    dictionary.cpp
 
 HEADERS += \
-        trainerwindow.h
+        trainerwindow.h \
+    dictionary.h \
+    word.h \
+    trayicon.h \
+    globals.h \
+    deliveryboy.h \
+    settings.h \
+    dictionary.h
 
 FORMS += \
-        trainerwindow.ui
+        trainerwindow.ui \
+    dictionary.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
