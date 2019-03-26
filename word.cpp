@@ -117,7 +117,7 @@ std::string Word::GetHashString()
 
 bool Word::IsCompleted()
 {
-    return m_learned_count >= Globals::g_settings->GetCachedAttemptToComplete();
+    return m_learned_count >= Globals::g_settings.GetCachedAttemptToComplete();
 }
 
 bool Word::IsCompletelyEqual(const Word & wrd)

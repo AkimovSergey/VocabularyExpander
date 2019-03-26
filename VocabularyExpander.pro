@@ -47,7 +47,8 @@ HEADERS += \
 
 FORMS += \
         trainerwindow.ui \
-    dictionary.ui
+    dictionary.ui \
+    settings.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
