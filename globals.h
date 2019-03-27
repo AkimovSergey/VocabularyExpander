@@ -16,10 +16,10 @@ public:
     static QString                      g_path_program_data;
     static DeliveryBoy                  g_delivery_boy;
     static QString                      g_lang_choises[];
-    static TrayIcon                     g_tray_icon;
-    static TrainerWindow                g_main_window;
-    static Settings                     g_settings;
-    static Dictionary                   g_dictionary;
+    static QScopedPointer<TrayIcon>     g_tray_icon;
+    static QScopedPointer<TrainerWindow> g_main_window;
+    static QScopedPointer<Settings>     g_settings;
+    static QScopedPointer<Dictionary>   g_dictionary;
     static QTimer                       g_timer;
     static Player                       g_player;
     static bool                         g_unloading;

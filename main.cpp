@@ -1,11 +1,9 @@
-#include "trainerwindow.h"
+#include "globals.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    TrainerWindow w;
-    w.show();
-
+    Globals::Initialize();
     return a.exec();
 }

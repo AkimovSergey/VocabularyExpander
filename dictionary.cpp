@@ -12,3 +12,9 @@ Dictionary::~Dictionary()
 {
     delete ui;
 }
+
+void Dictionary::Load()
+{
+    //LoadDictionary();
+    //LoadExercises(false);
+}

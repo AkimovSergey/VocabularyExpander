@@ -35,7 +35,7 @@ Word::Word(const QJsonObject &json)
         load_from_json(m_alternative_trans, "alternatives");
         load_from_json(m_meanings, "definitions");
         m_learned_count = LEARNED_COUNT_NOT_STARTED_YET;
-        m_order = Globals::g_dictionary.GetDictionarySize();
+        m_order = Globals::g_dictionary->GetDictionarySize();
         m_forced = false;
 
     }
@@ -111,7 +111,7 @@ QString Word::GetHashString()
 
 bool Word::IsCompleted()
 {
-    return m_learned_count >= Globals::g_settings.GetCachedAttemptToComplete();
+    return m_learned_count >= Globals::g_settings->GetCachedAttemptToComplete();
 }
 
 bool Word::IsCompletelyEqual(const Word & wrd)
@@ -140,7 +140,7 @@ bool Word::IsCompletelyEqual(const Word & wrd)
 QString Word::GetProgressAsString()
 {
     if(IsCompleted()) return "DONE";
-    int repetition = Globals::g_settings.GetCachedAttemptToComplete();
+    int repetition = Globals::g_settings->GetCachedAttemptToComplete();
     if(m_learned_count == (repetition - 1)) return "Last";
     return m_learned_count > 0 ? QString("%d").arg( m_learned_count * 100 / repetition) + " %" : "0%";
 }

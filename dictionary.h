@@ -19,6 +19,7 @@ public:
     explicit Dictionary(QWidget *parent = nullptr);
     ~Dictionary();
     size_t GetDictionarySize(){return m_dictionary.size();}
+    void Load();
 
 private:
     Ui::Dictionary *ui;
