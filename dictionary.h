@@ -4,8 +4,8 @@
 #include <QDialog>
 #include <QSet>
 #include <QSharedPointer>
-
 #include "word.h"
+
 
 namespace Ui {
 class Dictionary;

@@ -20,7 +20,7 @@ public:
     void                  Dispose();
     QString               GetTranslation(){return m_value_trans;};
     bool                  TrySound(bool play);
-    QJsonObject           ToJSONNode() const;
+    QJsonObject           ToJSONObject() const;
     size_t                GetOrder(){return m_order;}
     QString               GetWordValue()const {return m_value;}
     QString               GetHashString();

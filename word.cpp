@@ -1,9 +1,11 @@
-#include "word.h"
-#include "globals.h"
 
+#include "globals.h"
+#include "word.h"
 #include <QFileInfo>
 #include <QJsonArray>
 #include <QFile>
+#include <QCryptographicHash>
+
 
 #define _DEF_NOT_FETCHED "Sorry can't fetch word translation via inet"
 #define LEARNED_COUNT_NOT_STARTED_YET -1
@@ -73,46 +75,38 @@ bool Word::TrySound( bool play)
     return true;
 }
 
-Json::Value Word::ToJSONNode() const
+QJsonObject Word::ToJSONObject() const
 {
-
-    Json::Value res;
-    res["word"] = m_value.ToUTF8().data();
-    res["translation"] = m_value_trans.ToUTF8().data();
-    res["from"] = m_lang_from.ToUTF8().data();
-    res["to"] = m_lang_to.ToUTF8().data();
-
+    QJsonObject res;
+    res["word"] = m_value;
+    res["translation"] = m_value_trans;
+    res["from"] = m_lang_from;
+    res["to"] = m_lang_to;
     if(!m_alternative_trans.empty())
     {
-        Json::Value alts;
-        for (size_t i = 0; i < m_alternative_trans.size(); i++)
-            alts.append(m_alternative_trans[i].ToUTF8().data());
+        QJsonArray alts;
+        for (const auto & it : m_alternative_trans)
+            alts.append(it);
         res["alternatives"] = alts;
     }
-
     if(!m_meanings.empty())
     {
-        Json::Value dfns;
-        for (size_t i = 0; i < m_meanings.size(); i++)
-            dfns.append(m_meanings[i].ToUTF8().data());
+        QJsonArray dfns;
+        for (const auto & it : m_meanings)
+            dfns.append(it);
         res["definitions"] = dfns;
     }
-
-
     return res;
 }
 
-Word::operator const wxString&() const
+Word::operator const QString&() const
 {
     return m_value;
 }
 
-std::string Word::GetHashString()
+QString Word::GetHashString()
 {
-    std::string res =  (std::string)m_value.ToUTF8();
-    auto t = std::hash<std::string>()(res);
-    return std::to_string(t);
-
+    return QString(QCryptographicHash::hash(m_value.toUtf8(),QCryptographicHash::Sha1));
 }
 
 bool Word::IsCompleted()
@@ -143,12 +137,12 @@ bool Word::IsCompletelyEqual(const Word & wrd)
     return true;
 }
 
-wxString Word::GetProgressAsString()
+QString Word::GetProgressAsString()
 {
-    if(IsCompleted()) return L"DONE";
-    int repetition = Globals::g_settings->GetCachedAttemptToComplete();
-    if(m_learned_count == (repetition - 1)) return L"Last";
-    return m_learned_count > 0 ? wxString::Format(L"%d", m_learned_count * 100 / repetition) + L" %" : L"0%";
+    if(IsCompleted()) return "DONE";
+    int repetition = Globals::g_settings.GetCachedAttemptToComplete();
+    if(m_learned_count == (repetition - 1)) return "Last";
+    return m_learned_count > 0 ? QString("%d").arg( m_learned_count * 100 / repetition) + " %" : "0%";
 }
 
 size_t Word::GetProgressPercentage(size_t amount_of_try)
@@ -159,19 +153,6 @@ size_t Word::GetProgressPercentage(size_t amount_of_try)
 Word& Word::operator++()
 {
     m_learned_count++;
-    if(((GetLearnedCount() * 100)/Globals::g_settings->GetCachedAttemptToComplete()) < 50)
-        m_last_time = Globals::GetCurrentTime();
-    if (m_learned_count >= Globals::g_settings->GetCachedAttemptToComplete())
-    {
-        int lc = 1;
-        Globals::g_settings->GetValue(_SETTINGS_LEARNED_COUNT, lc);
-        if (lc < 0)
-            lc = LIMIT_BEFORE_WARNING;
-        else
-            lc++;
-        Globals::g_settings->SetValue(_SETTINGS_LEARNED_COUNT, lc);
-    }
-
     return *this;
 }
 
@@ -179,7 +160,6 @@ Word& Word::operator--()
 {
     if (m_learned_count > 0)
         m_learned_count--;
-
     return *this;
 }
 

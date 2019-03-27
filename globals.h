@@ -7,6 +7,7 @@
 #include "trayicon.h"
 #include "settings.h"
 #include "dictionary.h"
+#include "player.h"
 
 class Globals
 {
@@ -20,7 +21,7 @@ public:
     static Settings                     g_settings;
     static Dictionary                   g_dictionary;
     static QTimer                       g_timer;
-    //static Player                        g_player;
+    static Player                       g_player;
     static bool                         g_unloading;
     static void                         Initialize();
     static void                         DisplayError(QString err);

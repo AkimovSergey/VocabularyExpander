@@ -27,23 +27,23 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         trainerwindow.cpp \
-    dictionary.cpp \
     word.cpp \
     trayicon.cpp \
     globals.cpp \
     deliveryboy.cpp \
     settings.cpp \
-    dictionary.cpp
+    dictionary.cpp \
+    player.cpp
 
 HEADERS += \
         trainerwindow.h \
-    dictionary.h \
     word.h \
     trayicon.h \
     globals.h \
     deliveryboy.h \
     settings.h \
-    dictionary.h
+    dictionary.h \
+    player.h
 
 FORMS += \
         trainerwindow.ui \
