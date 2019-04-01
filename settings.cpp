@@ -13,3 +13,9 @@ int Settings::GetCachedAttemptToComplete()
     return m_cached_attempt_to_complete;
 
 }
+
+template<>
+bool Settings::GetValue<bool>(const char * name)
+{
+  return true;
+}

@@ -48,9 +48,12 @@ public:
     void Load();
     void Save();
     template<class T>
-    void SetValue(const char * name, T value);
+    void SetValue(const char * name, T value)
+    {
+
+    }
     template<class T>
-    bool GetValue(const char * name, T value);
+    T GetValue(const char * name);
     int GetCachedAttemptToComplete();
 
 private:
@@ -59,4 +62,6 @@ private:
     QVariantMap    m_settings;
 
 };
+
+
 #endif // SETTINGS_H

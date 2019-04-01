@@ -33,7 +33,8 @@ SOURCES += \
     deliveryboy.cpp \
     settings.cpp \
     dictionary.cpp \
-    player.cpp
+    player.cpp \
+    newword.cpp
 
 HEADERS += \
         trainerwindow.h \
@@ -43,12 +44,14 @@ HEADERS += \
     deliveryboy.h \
     settings.h \
     dictionary.h \
-    player.h
+    player.h \
+    newword.h
 
 FORMS += \
         trainerwindow.ui \
     dictionary.ui \
-    settings.ui
+    settings.ui \
+    newword.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

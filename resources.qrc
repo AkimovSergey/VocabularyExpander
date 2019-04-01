@@ -3,5 +3,11 @@
         <file>resources/exit.png</file>
         <file>resources/icon16.bmp</file>
         <file>resources/add.png</file>
+        <file>resources/act.png</file>
+        <file>resources/dic.png</file>
+        <file>resources/paus.png</file>
+        <file>resources/play.png</file>
+        <file>resources/sett.png</file>
+        <file>resources/about.png</file>
     </qresource>
 </RCC>
