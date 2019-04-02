@@ -16,7 +16,7 @@ bool Player::PlayMedia(QString path)
 {
 #if defined(WIN32) && !defined(UNIX)
 
-    IGraphBuilder *pGraph = NULL;
+  /*  IGraphBuilder *pGraph = NULL;
     IMediaControl *pControl = NULL;
     IMediaEvent   *pEvent = NULL;
 
@@ -51,7 +51,7 @@ bool Player::PlayMedia(QString path)
     pControl->Release();
     pEvent->Release();
     pGraph->Release();
-    CoUninitialize();
+    CoUninitialize();*/
 #endif
 
     return true;
@@ -66,11 +66,12 @@ bool Player::SwitchRecord(bool start_stop)
         m_p_thread_record.reset( new std::thread(std::bind(&Player::ThreadRecordAndPlay, this)));
     }
     return m_b_stop;*/
+    return true;
 }
 
 #if defined(WIN32) && !defined(UNIX)
 
-VOID CALLBACK Player::waveOutProc(HWAVEOUT hWaveOut, UINT nMessage, DWORD_PTR nInstance, DWORD_PTR nParameter1, DWORD_PTR nParameter2)
+/*VOID CALLBACK Player::waveOutProc(HWAVEOUT hWaveOut, UINT nMessage, DWORD_PTR nInstance, DWORD_PTR nParameter1, DWORD_PTR nParameter2)
 {
     Player * pPlayer = (Player*)nInstance;
     if(nMessage == MM_WOM_DONE)
@@ -180,6 +181,6 @@ VOID CALLBACK Player::waveInProc(HWAVEIN hWaveIn, UINT nMessage, DWORD_PTR nInst
     }
 #endif
 
-}
+}*/
 #endif
 

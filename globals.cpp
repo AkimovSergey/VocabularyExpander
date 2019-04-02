@@ -16,7 +16,7 @@ void Globals::Initialize()
 {
 
     if (g_path_program_data.isEmpty())
-        g_path_program_data = QStandardPaths::DataLocation + QDir::separator();
+        g_path_program_data = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QDir::separator();
     if(!QDir(g_path_program_data).exists())
         QDir().mkdir(g_path_program_data);
 
@@ -25,6 +25,7 @@ void Globals::Initialize()
         QDir().mkdir(g_path_word_files);
 
     g_settings.reset(new Settings());
+    g_settings->Load();
     g_main_window.reset(new TrainerWindow());
     g_tray_icon.reset(new TrayIcon());
     g_tray_icon->Start();

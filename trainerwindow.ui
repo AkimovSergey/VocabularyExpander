@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>480</width>
-    <height>390</height>
+    <width>383</width>
+    <height>247</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -28,211 +28,197 @@
   <property name="windowTitle">
    <string>VocabularyExpander</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/res/resources/icon16.bmp</normaloff>:/res/resources/icon16.bmp</iconset>
+  </property>
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
-    <layout class="QGridLayout" name="gridLayout" rowstretch="30,10,30,10" rowminimumheight="36,14,36,14" columnminimumwidth="0">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetDefaultConstraint</enum>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="2" column="5">
+    <widget class="QPushButton" name="bt_sound">
+     <property name="minimumSize">
+      <size>
+       <width>40</width>
+       <height>0</height>
+      </size>
      </property>
-     <property name="leftMargin">
+     <property name="text">
+      <string>Sound</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2" colspan="2">
+    <widget class="QPushButton" name="bt_edit_dictionary">
+     <property name="text">
+      <string>Edit Dictionary</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="6">
+    <widget class="QComboBox" name="comboBox">
+     <property name="maximumSize">
+      <size>
+       <width>46</width>
+       <height>20</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QPushButton" name="bt_tip">
+     <property name="minimumSize">
+      <size>
+       <width>40</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Tip</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="6">
+    <widget class="QTextEdit" name="tb_from">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>100</horstretch>
+       <verstretch>100</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="sizeIncrement">
+      <size>
+       <width>100</width>
+       <height>100</height>
+      </size>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QPushButton" name="bt_alternatives">
+     <property name="minimumSize">
+      <size>
+       <width>50</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="baseSize">
+      <size>
+       <width>40</width>
+       <height>22</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Altrntvs</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QPushButton" name="bt_edit_card">
+     <property name="text">
+      <string>Edit Card</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QPushButton" name="bt_check">
+     <property name="minimumSize">
+      <size>
+       <width>40</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Check</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="4">
+    <widget class="QPushButton" name="bt_examples">
+     <property name="minimumSize">
+      <size>
+       <width>50</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Exmpls</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="4" colspan="2">
+    <widget class="QPushButton" name="bt_settings">
+     <property name="text">
+      <string>Settings</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="6">
+    <widget class="QComboBox" name="cb_from">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>100</horstretch>
+       <verstretch>100</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>46</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="maxVisibleItems">
+      <number>50</number>
+     </property>
+     <property name="minimumContentsLength">
       <number>0</number>
      </property>
-     <property name="topMargin">
-      <number>0</number>
+    </widget>
+   </item>
+   <item row="2" column="6">
+    <widget class="QPushButton" name="bt_record">
+     <property name="minimumSize">
+      <size>
+       <width>40</width>
+       <height>0</height>
+      </size>
      </property>
-     <property name="rightMargin">
-      <number>0</number>
+     <property name="text">
+      <string>Record</string>
      </property>
-     <property name="bottomMargin">
-      <number>0</number>
+    </widget>
+   </item>
+   <item row="2" column="3">
+    <widget class="QPushButton" name="bt_meanings">
+     <property name="minimumSize">
+      <size>
+       <width>50</width>
+       <height>0</height>
+      </size>
      </property>
-     <property name="spacing">
-      <number>0</number>
+     <property name="text">
+      <string>Meangs</string>
      </property>
-     <item row="0" column="0">
-      <layout class="QHBoxLayout" name="layout_from" stretch="90,10">
-       <property name="spacing">
-        <number>6</number>
-       </property>
-       <property name="sizeConstraint">
-        <enum>QLayout::SetDefaultConstraint</enum>
-       </property>
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QTextEdit" name="tb_from">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>100</horstretch>
-           <verstretch>100</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="sizeIncrement">
-          <size>
-           <width>100</width>
-           <height>100</height>
-          </size>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-        </widget>
-       </item>
-       <item alignment="Qt::AlignRight">
-        <widget class="QComboBox" name="cb_from">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>100</horstretch>
-           <verstretch>100</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>46</width>
-           <height>23</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="maxVisibleItems">
-          <number>50</number>
-         </property>
-         <property name="minimumContentsLength">
-          <number>0</number>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="1" column="0">
-      <layout class="QHBoxLayout" name="layout_control">
-       <property name="spacing">
-        <number>2</number>
-       </property>
-       <property name="topMargin">
-        <number>4</number>
-       </property>
-       <property name="bottomMargin">
-        <number>4</number>
-       </property>
-       <item>
-        <widget class="QPushButton" name="bt_check">
-         <property name="text">
-          <string>Check</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="bt_tip">
-         <property name="text">
-          <string>Tip</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="bt_alternatives">
-         <property name="text">
-          <string>Altrntvs</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="bt_meanings">
-         <property name="text">
-          <string>Meangs</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="bt_examples">
-         <property name="text">
-          <string>Exmpls</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="bt_sound">
-         <property name="text">
-          <string>Sound</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="bt_record">
-         <property name="text">
-          <string>Record</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="2" column="0">
-      <layout class="QHBoxLayout" name="layout_to" stretch="90,10">
-       <item>
-        <widget class="QTextEdit" name="textEdit"/>
-       </item>
-       <item>
-        <widget class="QComboBox" name="comboBox">
-         <property name="maximumSize">
-          <size>
-           <width>46</width>
-           <height>23</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="3" column="0">
-      <layout class="QHBoxLayout" name="layout_additional">
-       <property name="spacing">
-        <number>2</number>
-       </property>
-       <property name="topMargin">
-        <number>4</number>
-       </property>
-       <item>
-        <widget class="QPushButton" name="bt_edit_card">
-         <property name="text">
-          <string>Edit Card</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="bt_edit_dictionary">
-         <property name="text">
-          <string>Edit Dictionary</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="bt_settings">
-         <property name="text">
-          <string>Settings</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="6">
+    <widget class="QTextEdit" name="textEdit"/>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -17,9 +17,9 @@ Word::Word(const QJsonObject &json)
     {
         auto load_from_json = [&](auto & res, QString nm)
         {
-            if constexpr (std::is_same_v<decltype(res), QString>)
+            if constexpr (std::is_same_v<decltype(res), QString &>)
                 if (json.contains(nm) && json[nm].isString()) res = json[nm].toString();
-            if constexpr (std::is_same_v<decltype(res), QVector<QString>>)
+            if constexpr (std::is_same_v<decltype(res), QVector<QString> &>)
                 if(json[nm].isArray())
                 {
                     QJsonArray arr = json[nm].toArray();

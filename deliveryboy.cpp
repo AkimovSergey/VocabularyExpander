@@ -296,7 +296,7 @@ bool DeliveryBoy::FetchSound(const QString & word, const QString & from, const Q
     res.Close();
 
     }*/
-
+ return true;
 }
 
 bool DeliveryBoy::FetchTranslation(QString & word, QString & from, QString & to, QString & trans, QVector<QString> & defs, QVector<QString> & alts)

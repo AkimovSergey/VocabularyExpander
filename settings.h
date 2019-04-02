@@ -55,6 +55,7 @@ public:
     template<class T>
     T GetValue(const char * name);
     int GetCachedAttemptToComplete();
+    QString GetUserDictionaryDirectoryOrDefault(bool silent);
 
 private:
     int                                m_cached_attempt_to_complete;

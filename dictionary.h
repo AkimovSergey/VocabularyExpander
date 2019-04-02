@@ -2,7 +2,7 @@
 #define DICTIONARY_H
 
 #include <QDialog>
-#include <QSet>
+#include <QList>
 #include <QSharedPointer>
 #include "word.h"
 
@@ -22,8 +22,9 @@ public:
     void Load();
 
 private:
+    void LoadDictionary();
     Ui::Dictionary *ui;
-    QSet<QSharedPointer<Word>>      m_dictionary;
+    QList<QSharedPointer<Word>>      m_dictionary;
 };
 
 #endif // DICTIONARY_H
