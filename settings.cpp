@@ -1,12 +1,13 @@
 #include "settings.h"
 #include "globals.h"
-
+#include "ui_settings.h"
 #include <QJsonArray>
 #include <QJsonDocument>
 
-Settings::Settings(QWidget *parent):m_settings{{_SETTINGS_IS_EXERCISE_ACTIVE , false}}
+Settings::Settings(QWidget *parent):  QDialog(parent),
+    ui(new Ui::Settings), m_settings{{_SETTINGS_IS_EXERCISE_ACTIVE , false}}
 {
-
+    ui->setupUi(this);
 }
 
 void Settings::Load()

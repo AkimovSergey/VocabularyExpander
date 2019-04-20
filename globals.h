@@ -8,6 +8,7 @@
 #include "settings.h"
 #include "dictionary.h"
 #include "player.h"
+#include "addnewword.h"
 
 class Globals
 {
@@ -20,6 +21,7 @@ public:
     static QScopedPointer<TrainerWindow> g_main_window;
     static QScopedPointer<Settings>     g_settings;
     static QScopedPointer<Dictionary>   g_dictionary;
+    static QScopedPointer<AddNewWord>   g_add_new_word;
     static QTimer                       g_timer;
     static Player                       g_player;
     static bool                         g_unloading;

@@ -40,7 +40,7 @@ class Settings : public QDialog
 {
       Q_OBJECT
 public:
-
+    void closeEvent(QCloseEvent * ev){};
     explicit Settings(QWidget *parent = nullptr);
     ~Settings(){}
 
@@ -61,6 +61,7 @@ private:
     int                                m_cached_attempt_to_complete;
     void InitializeDefaults();
     QVariantMap    m_settings;
+    Ui::Settings *ui;
 
 };
 

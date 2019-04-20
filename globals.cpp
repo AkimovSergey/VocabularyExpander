@@ -5,6 +5,7 @@
 
 QString                      Globals::g_path_word_files;
 QString                      Globals::g_path_program_data;
+QScopedPointer<AddNewWord>   Globals::g_add_new_word;
 QScopedPointer<Dictionary>   Globals::g_dictionary;
 DeliveryBoy                  Globals::g_delivery_boy;
 QScopedPointer<TrayIcon>     Globals::g_tray_icon;
@@ -25,6 +26,7 @@ void Globals::Initialize()
         QDir().mkdir(g_path_word_files);
 
     g_settings.reset(new Settings());
+    g_add_new_word.reset(new AddNewWord);
     g_settings->Load();
     g_main_window.reset(new TrainerWindow());
     g_tray_icon.reset(new TrayIcon());

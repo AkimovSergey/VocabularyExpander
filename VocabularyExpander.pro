@@ -34,7 +34,8 @@ SOURCES += \
     settings.cpp \
     dictionary.cpp \
     player.cpp \
-    newword.cpp
+    newword.cpp \
+    addnewword.cpp
 
 HEADERS += \
         trainerwindow.h \
@@ -45,13 +46,15 @@ HEADERS += \
     settings.h \
     dictionary.h \
     player.h \
-    newword.h
+    newword.h \
+    addnewword.h
 
 FORMS += \
         trainerwindow.ui \
     dictionary.ui \
     settings.ui \
-    newword.ui
+    newword.ui \
+    addnewword.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

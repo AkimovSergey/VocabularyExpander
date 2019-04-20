@@ -4,17 +4,29 @@
 #include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QStandardItemModel>
 
 Dictionary::Dictionary(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Dictionary)
 {
     ui->setupUi(this);
+    InitAndFill();
 }
 
 Dictionary::~Dictionary()
 {
     delete ui;
+}
+
+void Dictionary::InitAndFill()
+{
+    static QStandardItemModel model;
+    static QStringList horizontalHeader = {"frc", "from", "to"};
+    model.setHorizontalHeaderLabels(horizontalHeader);
+    ui->tv_dictionary->setModel(&model);
+    ui->tv_dictionary->resizeRowsToContents();
+    ui->tv_dictionary->resizeColumnsToContents();
 }
 
 void Dictionary::Load()

@@ -22,6 +22,7 @@ public:
     void Load();
 
 private:
+    void InitAndFill();
     void LoadDictionary();
     Ui::Dictionary *ui;
     QList<QSharedPointer<Word>>      m_dictionary;
