@@ -9,6 +9,7 @@
 class Word
 {
 public:
+    friend class Dictionary;
     Word(const QJsonObject &json);
     operator const QString&()const;
     Word&							operator++();
@@ -37,7 +38,7 @@ public:
     bool                  IsForced()const{return m_forced;}
     void                  SetForced(bool how){m_forced = how;}
     bool                  IsCompletelyEqual(const Word & wrd);
-    QString              GetProgressAsString();
+    QString               GetProgressAsString();
     size_t                GetProgressPercentage(size_t amount_of_try);
 
 

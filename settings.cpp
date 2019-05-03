@@ -5,7 +5,7 @@
 #include <QJsonDocument>
 
 Settings::Settings(QWidget *parent):  QDialog(parent),
-    ui(new Ui::Settings), m_settings{{_SETTINGS_IS_EXERCISE_ACTIVE , false}}
+    ui(new Ui::Settings), m_settings{{SETTINGS_IS_EXERCISE_ACTIVE , false}}
 {
     ui->setupUi(this);
 }
@@ -35,6 +35,7 @@ int Settings::GetCachedAttemptToComplete()
 template<>
 bool Settings::GetValue<bool>(const char * name)
 {
+    auto tst = m_settings[name].toBool();
   return m_settings[name].toBool();
 }
 
@@ -53,7 +54,7 @@ int Settings::GetValue<int>(const char * name)
 QString Settings::GetUserDictionaryDirectoryOrDefault(bool silent)
 {
 
-    if (GetValue<bool>(_SETTINGS_USE_DEFAULT_DIR_FOR_DIC))
+    if (GetValue<bool>(SETTINGS_USE_DEFAULT_DIR_FOR_DIC))
             return Globals::g_path_program_data;
-    return Globals::g_settings->GetValue<QString>(_SETTINGS_DIC_DIR);
+    return Globals::g_settings->GetValue<QString>(SETTINGS_DIC_DIR);
 }

@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QList>
 #include <QSharedPointer>
+#include <QStandardItemModel>
 #include "word.h"
 
 
@@ -18,14 +19,20 @@ class Dictionary : public QDialog
 public:
     explicit Dictionary(QWidget *parent = nullptr);
     ~Dictionary();
-    size_t GetDictionarySize(){return m_dictionary.size();}
+    size_t GetDictionarySize(){return m_dictionary.length();}
     void Load();
 
 private:
     void InitAndFill();
     void LoadDictionary();
+    void SaveDictionary();
+    void LoadExercises();
+    void SaveExercises();
+    void FillModel();
+    QSharedPointer<Word> FindWordByValue(QString val);
     Ui::Dictionary *ui;
     QList<QSharedPointer<Word>>      m_dictionary;
+    QStandardItemModel               m_model;
 };
 
 #endif // DICTIONARY_H

@@ -111,7 +111,7 @@ QString Word::GetHashString()
 
 bool Word::IsCompleted()
 {
-    return m_learned_count >= Globals::g_settings->GetCachedAttemptToComplete();
+    return m_learned_count >= Globals::g_settings->GetValue<int>(SETTINGS_SUCCESSFUL_ATTEPTS_TO_COMPLETE);
 }
 
 bool Word::IsCompletelyEqual(const Word & wrd)
@@ -139,10 +139,10 @@ bool Word::IsCompletelyEqual(const Word & wrd)
 
 QString Word::GetProgressAsString()
 {
-    if(IsCompleted()) return "DONE";
-    int repetition = Globals::g_settings->GetCachedAttemptToComplete();
+    if(IsCompleted()) return "Done";
+    int repetition = Globals::g_settings->GetValue<int>(SETTINGS_SUCCESSFUL_ATTEPTS_TO_COMPLETE);
     if(m_learned_count == (repetition - 1)) return "Last";
-    return m_learned_count > 0 ? QString("%d").arg( m_learned_count * 100 / repetition) + " %" : "0%";
+    return m_learned_count > 0 ? QString("%1").arg( m_learned_count * 100 / repetition) + " %" : "0%";
 }
 
 size_t Word::GetProgressPercentage(size_t amount_of_try)
