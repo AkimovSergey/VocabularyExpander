@@ -11,8 +11,16 @@ TrayIcon::TrayIcon():m_tray_icon(QIcon(":res/resources/icon16.bmp"), this)
 
 }
 
+void TrayIcon::closing()
+{
+    // need to avoid application crash
+    m_tray_icon.hide();
+}
+
 void TrayIcon::Start()
 {
+    QObject::connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(closing()));
+
     auto menu = new QMenu();
 
     auto add_flash_card_Action = new QAction(QIcon(":res/resources/add.png"), "Add flash card", this);

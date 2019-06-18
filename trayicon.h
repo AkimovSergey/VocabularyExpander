@@ -11,6 +11,8 @@ public:
     void Start();
 private:
     QSystemTrayIcon m_tray_icon;
+public slots:
+   void closing();
 };
 
 #endif // TRAYICON_H
