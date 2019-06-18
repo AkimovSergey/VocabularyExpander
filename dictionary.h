@@ -7,6 +7,9 @@
 #include <QStandardItemModel>
 #include "word.h"
 
+#define EXERCISES_FN  "exercises.json"
+#define DICTIONARY_FN "dictionary.json"
+
 
 namespace Ui {
 class Dictionary;

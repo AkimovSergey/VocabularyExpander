@@ -4,6 +4,8 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QDir>
 
 
 template<>
@@ -90,7 +92,65 @@ QString Settings::GetUserDictionaryDirectoryOrDefault()
 void Settings::on_bt_choose_directory_clicked()
 {
     // cannot pass this it become frozen
-    QFileDialog dialog(nullptr);
-    dialog.setFileMode(QFileDialog::Directory);
-    dialog.exec();
+    auto res = QFileDialog::getExistingDirectory();//( dialog(nullptr);
+    auto prev = Globals::g_settings->GetValue<QString>(SETTINGS_DIC_DIR);
+    QDir qd;
+
+       if (!res.isEmpty() && prev != res)
+       {
+           if (!QFileInfo(res + DICTIONARY_FN).exists())
+           {
+               if(QFileInfo(prev + DICTIONARY_FN).exists())
+               {
+                   if((QMessageBox::Yes == QMessageBox::question(this, "Question", "Selected folder doesn't contain dictionary file.\r\n"
+                       "Do you want to save current dictionary here?",  QMessageBox::Yes | QMessageBox::No)))
+                       {
+                           if (!qd.rename(prev + DICTIONARY_FN, res + DICTIONARY_FN))
+                           {
+                               QMessageBox::warning(this, "Warning", "Can't move dictionary file, check if you have access");
+                               return;
+                           }
+
+                           if(QFileInfo(prev + EXERCISES_FN).exists())
+                               qd.rename(prev + EXERCISES_FN, res + EXERCISES_FN);
+                           SetValue(SETTINGS_DIC_DIR, res);
+                       }
+                       else
+                       {
+                           SetValue(SETTINGS_DIC_DIR, res);
+                           Globals::g_dictionary->Load();
+                       }
+               }
+
+           }
+           else
+           {
+               if(QFileInfo(prev + DICTIONARY_FN).exists())
+               {
+                   if((QMessageBox::No == QMessageBox::question(this, "Question", "New folder already has the dictionary.\r\n"
+                       "Do you want to load dictionary from this directory (YES) or replace with current dictionary? (NO)", QMessageBox::Yes | QMessageBox::No)))
+                   {
+                       if (!qd.remove(res + DICTIONARY_FN))
+                       {
+                           QMessageBox::warning(this, "Warning", "Can't delete dictionary file, check if you have access");
+                           return;
+                       }
+                       qd.rename(prev + DICTIONARY_FN, res + DICTIONARY_FN);
+                       if(QFileInfo(prev + DICTIONARY_FN).exists())
+                       {
+                           qd.remove(res + EXERCISES_FN);
+                           qd.rename(prev + EXERCISES_FN, res + EXERCISES_FN);
+                       }
+                   }
+                   else
+                   {
+                       SetValue(SETTINGS_DIC_DIR, res);
+                       Globals::g_dictionary->Load();
+                   }
+               }
+           }
+           SetValue(SETTINGS_DIC_DIR, res);
+           ui->st_dic_dir_value->setText(res);
+       }
+
 }
