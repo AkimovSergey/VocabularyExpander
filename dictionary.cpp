@@ -55,7 +55,7 @@ void Dictionary::Load()
 
 QJsonArray LoadJsonArrayFromDefDirectoryFile(QString file)
 {
-    auto t_file_path = Globals::g_settings->GetUserDictionaryDirectoryOrDefault(false);
+    auto t_file_path = Globals::g_settings->GetUserDictionaryDirectoryOrDefault();
     if(t_file_path.isEmpty())
         throw QString("No such file %1").arg(file);
     auto t_file_full_path = t_file_path + file;
@@ -65,6 +65,10 @@ QJsonArray LoadJsonArrayFromDefDirectoryFile(QString file)
        QByteArray saveData = loadFile.readAll();
        QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));
        return loadDoc.array();
+    }
+    else
+    {
+        throw "Cannot open file" + t_file_full_path;
     }
 }
 
@@ -79,7 +83,7 @@ void Dictionary::LoadDictionary()
     }
     catch (QString err)
     {
-        // May be for future log
+        qDebug()<<err;
     }
 }
 

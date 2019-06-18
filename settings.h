@@ -53,15 +53,20 @@ public:
     template<class T>
     T GetValue(const char * name);
     int GetCachedAttemptToComplete();
-    QString GetUserDictionaryDirectoryOrDefault(bool silent);
+    QString GetUserDictionaryDirectoryOrDefault();
+
+private slots:
+    void on_bt_choose_directory_clicked();
 
 private:
     int                                m_cached_attempt_to_complete;
     void InitializeDefaults();
+    void UpdateView();
     QVariantMap    m_settings;
     Ui::Settings *ui;
 
 };
+
 
 
 #endif // SETTINGS_H

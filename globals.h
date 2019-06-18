@@ -2,6 +2,7 @@
 #define GLOBALS_H
 
 #include <QString>
+#include <QDebug>
 #include "trainerwindow.h"
 #include "deliveryboy.h"
 #include "trayicon.h"

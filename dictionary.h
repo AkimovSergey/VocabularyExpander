@@ -30,7 +30,7 @@ private:
     void SaveExercises();
     void FillModel();
     QSharedPointer<Word> FindWordByValue(QString val);
-    Ui::Dictionary *ui;
+    Ui::Dictionary                   *ui;
     QList<QSharedPointer<Word>>      m_dictionary;
     QStandardItemModel               m_model;
 };
