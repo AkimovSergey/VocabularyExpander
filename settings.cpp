@@ -91,8 +91,7 @@ QString Settings::GetUserDictionaryDirectoryOrDefault()
 
 void Settings::on_bt_choose_directory_clicked()
 {
-    // cannot pass this it become frozen
-    auto res = QFileDialog::getExistingDirectory();//( dialog(nullptr);
+    auto res = QFileDialog::getExistingDirectory();
     auto prev = Globals::g_settings->GetValue<QString>(SETTINGS_DIC_DIR);
     QDir qd;
 
