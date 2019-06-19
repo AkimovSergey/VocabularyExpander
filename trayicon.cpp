@@ -31,7 +31,7 @@ void TrayIcon::Start()
 
     auto start_exercise_Action = new QAction(QIcon(":res/resources/play.png"), "Start exercise", this);
     connect(start_exercise_Action, &QAction::triggered, this, [=](){
-        Globals::g_main_window->exec();
+        Globals::g_main_window->StartExercise();
     });
     menu->addAction(start_exercise_Action);
 

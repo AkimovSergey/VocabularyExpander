@@ -46,7 +46,7 @@ void Globals::StartExerciseThread()
     g_exercise_thread.reset(new QThread(nullptr));
             //(QThread::create([]{g_exercise_timer->start(); }));
     g_exercise_timer = new QTimer(nullptr);
-    g_exercise_timer->setInterval(1);//g_settings->GetValue<int>(SETTINGS_REPEAT_EXERCISE_TIME) * 10 * 60);
+    g_exercise_timer->setInterval(g_settings->GetValue<int>(SETTINGS_REPEAT_EXERCISE_TIME) * 1000 * 60);
     g_exercise_timer->moveToThread(g_exercise_thread.get());
     g_exercise_timer->connect(g_exercise_thread.get(), SIGNAL(started()), SLOT(start()));
     g_exercise_timer->connect(g_exercise_timer, SIGNAL(timeout()), g_main_window.get(), SLOT(StartExercise()), Qt::DirectConnection);

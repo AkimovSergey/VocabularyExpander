@@ -5,11 +5,14 @@
 #include <QVector>
 #include <vector>
 
+#define LEARNED_COUNT_NOT_STARTED_YET -1
 
 class Word
 {
 public:
     friend class Dictionary;
+    friend class Coach;
+
     Word(const QJsonObject &json);
     operator const QString&()const;
     Word&							operator++();

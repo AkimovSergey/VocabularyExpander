@@ -23,6 +23,7 @@ public:
     explicit Dictionary(QWidget *parent = nullptr);
     ~Dictionary();
     size_t GetDictionarySize(){return m_dictionary.length();}
+    const QList<QSharedPointer<Word>> GetDictionary(){return m_dictionary;}
     void Load();
 
 private:

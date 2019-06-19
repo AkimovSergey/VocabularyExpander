@@ -2,6 +2,7 @@
 #define TRAINERWINDOW_H
 
 #include <QDialog>
+#include "coach.h"
 
 namespace Ui {
 class TrainerWindow;
@@ -16,13 +17,14 @@ public:
 
     ~TrainerWindow();
 
-private slots:
+public slots:
     void StartExercise();
-    void on_check_clicked();
-    void on_pushButton_clicked();
+private slots:
+    void on_bt_check_clicked();
 
 private:
     Ui::TrainerWindow *ui;
+    Coach             m_coach;
 };
 
 #endif // TRAINERWINDOW_H

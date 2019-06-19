@@ -15,15 +15,17 @@ TrainerWindow::~TrainerWindow()
 
 void TrainerWindow::StartExercise()
 {
-    exec();
+    show();
+    m_coach.StartExercise();
+    on_bt_check_clicked();
 }
 
-void TrainerWindow::on_check_clicked()
+void TrainerWindow::on_bt_check_clicked()
 {
-
-}
-
-void TrainerWindow::on_pushButton_clicked()
-{
-
+    if(!m_coach.Next())
+    {
+        close();
+        return;
+    }
+    ui->tb_from->setText(m_coach.ValueToTranslate());
 }

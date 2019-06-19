@@ -8,7 +8,6 @@
 
 
 #define _DEF_NOT_FETCHED "Sorry can't fetch word translation via inet"
-#define LEARNED_COUNT_NOT_STARTED_YET -1
 
 
 Word::Word(const QJsonObject &json)

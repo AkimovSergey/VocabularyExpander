@@ -25,6 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+    coach.cpp \
         main.cpp \
         trainerwindow.cpp \
     word.cpp \
@@ -38,6 +39,7 @@ SOURCES += \
     addnewword.cpp
 
 HEADERS += \
+    coach.h \
         trainerwindow.h \
     word.h \
     trayicon.h \
