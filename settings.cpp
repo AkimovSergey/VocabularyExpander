@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDir>
+#include <Qt>
 
 
 template<>
@@ -34,7 +35,12 @@ int Settings::GetValue<int>(const char * name)
 
 Settings::Settings(QWidget *parent):  QDialog(parent),
     ui(new Ui::Settings), m_settings{{SETTINGS_IS_EXERCISE_ACTIVE , false},
-                                     {SETTINGS_USE_DEFAULT_DIR_FOR_DIC, true}}
+                                     {SETTINGS_USE_DEFAULT_DIR_FOR_DIC, true},
+                                     {SETTINGS_SUCCESSFUL_ATTEPTS_TO_COMPLETE , 8},
+                                     {SETTINGS_NUMBER_OF_WORDS_IN_EXERCISE, 10},
+                                     {SETTINGS_NUMBER_OF_WORDS_TO_LEARN, 30},
+                                     {SETTINGS_CHECK_WHOLE_WORD, true},
+                                     {SETTINGS_REPEAT_EXERCISE_TIME, 40}}
 {
     ui->setupUi(this);
 }
@@ -57,10 +63,11 @@ void Settings::Load()
 
 void Settings::UpdateView()
 {
-    if(GetValue<bool>(SETTINGS_USE_DEFAULT_DIR_FOR_DIC))
-    {
-
-    }
+    bool chkd = GetValue<bool>(SETTINGS_USE_DEFAULT_DIR_FOR_DIC);
+    ui->cb_use_default_dir_for_dic->setCheckState(chkd ? Qt::Checked : Qt::Unchecked);
+    ui->bt_choose_directory->setEnabled(!chkd);
+    ui->st_dic_dir_value->setEnabled(!chkd);
+    ui->st_dic_dir_value->setText(GetValue<QString>(SETTINGS_DIC_DIR));
 }
 
 void Settings::Save()
@@ -83,10 +90,14 @@ int Settings::GetCachedAttemptToComplete()
 
 QString Settings::GetUserDictionaryDirectoryOrDefault()
 {
-
     if (GetValue<bool>(SETTINGS_USE_DEFAULT_DIR_FOR_DIC))
             return Globals::g_path_program_data;
     return Globals::g_settings->GetValue<QString>(SETTINGS_DIC_DIR);
+}
+
+void Settings::closeEvent(QCloseEvent *)
+{
+    Save();
 }
 
 void Settings::on_bt_choose_directory_clicked()
@@ -94,62 +105,68 @@ void Settings::on_bt_choose_directory_clicked()
     auto res = QFileDialog::getExistingDirectory();
     auto prev = Globals::g_settings->GetValue<QString>(SETTINGS_DIC_DIR);
     QDir qd;
+    if(res.isEmpty() || prev == res)
+        return;
+    res += QDir::separator();
 
-       if (!res.isEmpty() && prev != res)
+    if (!QFileInfo(res + DICTIONARY_FN).exists())
+    {
+       if(QFileInfo(prev + DICTIONARY_FN).exists())
        {
-           if (!QFileInfo(res + DICTIONARY_FN).exists())
+           if((QMessageBox::Yes == QMessageBox::question(this, "Question", "Selected folder doesn't contain dictionary file.\r\n"
+               "Do you want to save current dictionary here?",  QMessageBox::Yes | QMessageBox::No)))
+               {
+                   if (!qd.rename(prev + DICTIONARY_FN, res + DICTIONARY_FN))
+                   {
+                       QMessageBox::warning(this, "Warning", "Can't move dictionary file, check if you have access");
+                       return;
+                   }
+
+                   if(QFileInfo(prev + EXERCISES_FN).exists())
+                       qd.rename(prev + EXERCISES_FN, res + EXERCISES_FN);
+                   SetValue(SETTINGS_DIC_DIR, res);
+               }
+               else
+               {
+                   SetValue(SETTINGS_DIC_DIR, res);
+                   Globals::g_dictionary->Load();
+               }
+       }
+
+    }
+    else
+    {
+       if(QFileInfo(prev + DICTIONARY_FN).exists())
+       {
+           if((QMessageBox::No == QMessageBox::question(this, "Question", "New folder already has the dictionary.\r\n"
+               "Do you want to load dictionary from this directory (YES) or replace with current dictionary? (NO)", QMessageBox::Yes | QMessageBox::No)))
            {
+               if (!qd.remove(res + DICTIONARY_FN))
+               {
+                   QMessageBox::warning(this, "Warning", "Can't delete dictionary file, check if you have access");
+                   return;
+               }
+               qd.rename(prev + DICTIONARY_FN, res + DICTIONARY_FN);
                if(QFileInfo(prev + DICTIONARY_FN).exists())
                {
-                   if((QMessageBox::Yes == QMessageBox::question(this, "Question", "Selected folder doesn't contain dictionary file.\r\n"
-                       "Do you want to save current dictionary here?",  QMessageBox::Yes | QMessageBox::No)))
-                       {
-                           if (!qd.rename(prev + DICTIONARY_FN, res + DICTIONARY_FN))
-                           {
-                               QMessageBox::warning(this, "Warning", "Can't move dictionary file, check if you have access");
-                               return;
-                           }
-
-                           if(QFileInfo(prev + EXERCISES_FN).exists())
-                               qd.rename(prev + EXERCISES_FN, res + EXERCISES_FN);
-                           SetValue(SETTINGS_DIC_DIR, res);
-                       }
-                       else
-                       {
-                           SetValue(SETTINGS_DIC_DIR, res);
-                           Globals::g_dictionary->Load();
-                       }
+                   qd.remove(res + EXERCISES_FN);
+                   qd.rename(prev + EXERCISES_FN, res + EXERCISES_FN);
                }
-
            }
            else
            {
-               if(QFileInfo(prev + DICTIONARY_FN).exists())
-               {
-                   if((QMessageBox::No == QMessageBox::question(this, "Question", "New folder already has the dictionary.\r\n"
-                       "Do you want to load dictionary from this directory (YES) or replace with current dictionary? (NO)", QMessageBox::Yes | QMessageBox::No)))
-                   {
-                       if (!qd.remove(res + DICTIONARY_FN))
-                       {
-                           QMessageBox::warning(this, "Warning", "Can't delete dictionary file, check if you have access");
-                           return;
-                       }
-                       qd.rename(prev + DICTIONARY_FN, res + DICTIONARY_FN);
-                       if(QFileInfo(prev + DICTIONARY_FN).exists())
-                       {
-                           qd.remove(res + EXERCISES_FN);
-                           qd.rename(prev + EXERCISES_FN, res + EXERCISES_FN);
-                       }
-                   }
-                   else
-                   {
-                       SetValue(SETTINGS_DIC_DIR, res);
-                       Globals::g_dictionary->Load();
-                   }
-               }
+               SetValue(SETTINGS_DIC_DIR, res);
+               Globals::g_dictionary->Load();
            }
-           SetValue(SETTINGS_DIC_DIR, res);
-           ui->st_dic_dir_value->setText(res);
        }
+    }
+    SetValue(SETTINGS_DIC_DIR, res);
+    ui->st_dic_dir_value->setText(res);
 
+}
+
+void Settings::on_cb_use_default_dir_for_dic_stateChanged(int arg1)
+{
+    SetValue(SETTINGS_USE_DEFAULT_DIR_FOR_DIC, arg1 != 0);
+    UpdateView();
 }

@@ -13,6 +13,11 @@ TrainerWindow::~TrainerWindow()
     delete ui;
 }
 
+void TrainerWindow::StartExercise()
+{
+    exec();
+}
+
 void TrainerWindow::on_check_clicked()
 {
 

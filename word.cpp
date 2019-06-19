@@ -139,7 +139,8 @@ bool Word::IsCompletelyEqual(const Word & wrd)
 
 QString Word::GetProgressAsString()
 {
-    if(IsCompleted()) return "Done";
+    if(IsCompleted())
+        return "Done";
     int repetition = Globals::g_settings->GetValue<int>(SETTINGS_SUCCESSFUL_ATTEPTS_TO_COMPLETE);
     if(m_learned_count == (repetition - 1)) return "Last";
     return m_learned_count > 0 ? QString("%1").arg( m_learned_count * 100 / repetition) + " %" : "0%";

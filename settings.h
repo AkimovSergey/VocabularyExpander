@@ -57,6 +57,7 @@ public:
 
 private slots:
     void on_bt_choose_directory_clicked();
+    void on_cb_use_default_dir_for_dic_stateChanged(int arg1);
 
 private:
     int                                m_cached_attempt_to_complete;
@@ -64,6 +65,9 @@ private:
     void UpdateView();
     QVariantMap    m_settings;
     Ui::Settings *ui;
+
+protected:
+    void closeEvent(QCloseEvent *event);
 
 };
 

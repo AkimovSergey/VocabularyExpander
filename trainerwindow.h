@@ -13,11 +13,12 @@ class TrainerWindow : public QDialog
 
 public:
     explicit TrainerWindow(QWidget *parent = nullptr);
+
     ~TrainerWindow();
 
 private slots:
+    void StartExercise();
     void on_check_clicked();
-
     void on_pushButton_clicked();
 
 private:

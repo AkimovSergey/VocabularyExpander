@@ -121,7 +121,7 @@ void Dictionary::LoadExercises()
     }
     catch (QString err)
     {
-        // May be for future log
+        qDebug()<<err;
     }
 
 }
