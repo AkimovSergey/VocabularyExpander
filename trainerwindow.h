@@ -14,8 +14,8 @@ class TrainerWindow : public QDialog
 
 public:
     explicit TrainerWindow(QWidget *parent = nullptr);
-
     ~TrainerWindow();
+
 
 public slots:
     void StartExercise();
@@ -25,6 +25,9 @@ private slots:
 private:
     Ui::TrainerWindow *ui;
     Coach             m_coach;
+
+protected:
+    void closeEvent(QCloseEvent * event);
 };
 
 #endif // TRAINERWINDOW_H

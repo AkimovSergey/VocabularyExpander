@@ -25,13 +25,13 @@ public:
     size_t GetDictionarySize(){return m_dictionary.length();}
     const QList<QSharedPointer<Word>> GetDictionary(){return m_dictionary;}
     void Load();
+    void SaveExercises();
 
 private:
     void InitAndFill();
     void LoadDictionary();
     void SaveDictionary();
     void LoadExercises();
-    void SaveExercises();
     void FillModel();
     QSharedPointer<Word> FindWordByValue(QString val);
     Ui::Dictionary                   *ui;

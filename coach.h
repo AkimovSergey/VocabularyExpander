@@ -36,7 +36,7 @@ public:
 	bool IsLastTryForWord();
     EXERCISE_WAY GetCurrentExerciseWay() { return m_current_exrcise_way; };
     QSharedPointer<Word> GetCurrentWord();
-    bool CheckAnswer(QString & ans);
+    bool CheckAnswer(QString ans);
     QString GetCurrentProgress();
 
 

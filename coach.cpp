@@ -211,7 +211,7 @@ EXERCISE_WAY Coach::RandomExerciseWay()
     return (EXERCISE_WAY)(arr[std::rand() % max]);
 }
 
-bool Coach::CheckAnswer(QString & ans)
+bool Coach::CheckAnswer(QString ans)
 {
 
 	bool res = false;
