@@ -128,6 +128,30 @@ void Dictionary::LoadExercises()
 
 void Dictionary::SaveExercises()
 {
+    auto t_settings_full_path = Globals::g_path_program_data + "settings.json";
+    QJsonArray e_array;
+    auto t_file_path = Globals::g_settings->GetUserDictionaryDirectoryOrDefault();
+    if(t_file_path.isEmpty()) return;
+    QString t_exercises_path =  t_file_path + EXERCISES_FN;
+
+    for(auto & c : m_dictionary)
+    {
+        if(c->GetLearnedCount() != LEARNED_COUNT_NOT_STARTED_YET || c->IsForced())
+        {
+            QJsonObject val;
+            val["word"] = c->GetWordValue();
+            val["count"] = c->GetLearnedCount();
+            val["time"] = (long long)c->GetLastSuccesfulExrciseTime();
+            if(c->IsForced())
+                val["forced"] = 1;
+            e_array.append(val);
+        }
+    }
+
+    QJsonDocument json(e_array);
+    QFile jsonFile(t_settings_full_path);
+    jsonFile.open(QFile::WriteOnly);
+    jsonFile.write(json.toJson());
 
 }
 
