@@ -3,6 +3,12 @@
 #include "settings.h"
 #include <QString>
 #include <QVector>
+#define CURL_STATICLIB
+#if defined(WIN32) && !defined(UNIX)
+#include "external_libs/curl/include/curl.h"
+#else
+#include <curl/curl.h>
+#endif
 
 
 int writer(char *data, size_t size, size_t nmemb,
@@ -18,63 +24,40 @@ int writer(char *data, size_t size, size_t nmemb,
 
 DeliveryBoy::DeliveryBoy()
 {
-    //curl_global_init(CURL_GLOBAL_ALL);
+    curl_global_init(CURL_GLOBAL_ALL);
 
 }
 
 DeliveryBoy::~DeliveryBoy()
 {
-    //curl_global_cleanup();
+    curl_global_cleanup();
 }
 
 QString DeliveryBoy::FetchWord( const QString & word, const QString & from, const QString & to)
 {
-    /*const unsigned int HTTP_TIMEOUT = 10;
+    CURL *curl;
 
-    const RequestsHolder::Request & request = Globals::g_requests_holder.GetRequest(_REQUEST_GET_WORD);
-    wxString rqst = wxString::Format(request.m_request,from, to, word);
-
-    wxURI uri(rqst);
-    rqst = uri.BuildURI();
-
-    wxHTTP http;
-    http.SetHeader(
-        wxT("User-Agent"),
-        wxT("Mozilla/5.0 (X11; U; FreeBSD i386; ru-RU; rv:1.9.2.13) Gecko/20110202 Firefox/3.6.13")
-      );
-    if ( !http.Connect(request.m_address) )
+    curl = curl_easy_init();
+            std::string result;
+    if(curl)
     {
-        Globals::DisplayError(L"Cannot connect to server. Check network connection.");
+
+
+        std::string rqst = std::string("https://context.reverso.net/translation/russian-english/%D0%B3%D0%B5%D0%BD%D0%B5%D1%80%D0%B0%D0%BB");
+
+        //std::string rqst = std::string("translate.google.com/translate_tts?tl=") + frm + "&q=" + wrd;
+
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writer);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result);
+        curl_easy_setopt(curl, CURLOPT_URL, rqst.c_str());
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
+
+        auto r = curl_easy_perform(curl);
+    }
+
+
+    //if(result.empty())
         return "";
-    }
-
-     wxInputStream* inputStream = http.GetInputStream(rqst);
-     wxProtocolError err;
-    if ((err = http.GetError()) != wxPROTO_NOERR)
-    {
-        Globals::DisplayError(L"Server return error, try later.");
-        return "";
-    }
-
-    wxString res;
-    wxStringOutputStream out_stream(&res);
-    inputStream->Read(out_stream);
-
-    wxRegEx regex;
-    if(regex.Compile(request.m_regular_exp,  wxRE_ADVANCED))
-    {
-        if (!regex.Matches(res))
-        {
-            Globals::DisplayError(L"Wrong response from server.");
-            return "";
-        }
-        wxString subtext=regex.GetMatch(res,0);
-        subtext = subtext.substr(1, subtext.Length()-2);
-        return subtext;
-    }
-
-    Globals::DisplayError(L"Wrong response from server.");*/
-    return "";
 }
 
 /*int64_t GetTKKFromGoogle(CURL * curl)

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 CONFIG += c++17
-QT       += core gui
+QT     += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -26,8 +26,8 @@ CONFIG += c++11
 
 SOURCES += \
     coach.cpp \
-        main.cpp \
-        trainerwindow.cpp \
+    main.cpp \
+    trainerwindow.cpp \
     word.cpp \
     trayicon.cpp \
     globals.cpp \
@@ -40,7 +40,7 @@ SOURCES += \
 
 HEADERS += \
     coach.h \
-        trainerwindow.h \
+    trainerwindow.h \
     word.h \
     trayicon.h \
     globals.h \
@@ -52,7 +52,7 @@ HEADERS += \
     addnewword.h
 
 FORMS += \
-        trainerwindow.ui \
+    trainerwindow.ui \
     dictionary.ui \
     settings.ui \
     newword.ui \
@@ -65,3 +65,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     resources.qrc
+
+LIBS += \
+    $$PWD\external_libs\curl\lib/libcurl.lib \
+    -lws2_32 \
+    -ladvapi32 \
+    -lcrypt32 \
+    -lwldap32 \
+    -lnormaliz

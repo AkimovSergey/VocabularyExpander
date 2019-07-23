@@ -15,6 +15,9 @@ public:
     explicit AddNewWord(QWidget *parent = nullptr);
     ~AddNewWord();
 
+private slots:
+    void on_bt_translate_clicked();
+
 private:
     Ui::AddNewWord *ui;
 };

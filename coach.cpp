@@ -3,6 +3,7 @@
 #include "settings.h"
 #include "coach.h"
 #include <algorithm>
+#include <random>
 #include <QDateTime>
 
 
@@ -28,8 +29,9 @@ bool Coach::StartExercise()
             FillRandomWithCmp(cnt, [=](const QSharedPointer<Word> & ptr){
 				if(ptr->GetLearnedCount() == LEARNED_COUNT_NOT_STARTED_YET) {/* mark as taken to exrcises*/++(*ptr) ; return true;}
 				else return false;});
-
-		std::random_shuffle(m_exercise_set.begin() + filled_by_forced, m_exercise_set.end());
+        std::random_device rd;
+        std::mt19937 g(rd());
+        std::shuffle(m_exercise_set.begin() + filled_by_forced, m_exercise_set.end(), g);
 		if(m_exercise_set.size() > count)
 			m_exercise_set.erase(m_exercise_set.begin() + count, m_exercise_set.end());
 	}
