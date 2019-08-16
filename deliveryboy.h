@@ -4,13 +4,17 @@
 #include <QString>
 #include <QVector>
 #include <QPair>
+#include <QSharedPointer>
+#include "word.h"
 
-class DeliveryBoy
+
+class DeliveryBoy: public QObject
 {
+    Q_OBJECT
+
 public:
-    DeliveryBoy();
-    ~DeliveryBoy();
-    QString FetchWord(const QString & word, const QString & from, const QString & to );
+    explicit DeliveryBoy(QObject* parent = 0);
+    QSharedPointer<Word>FetchWord(const QString  word, const QString  from, const QString  to );
     bool FetchSound(const QString & word, const QString & from, const QString & path_to_save );
     bool FetchTranslation(QString & word, QString & from, QString & to, QString & trans, QVector<QString> & defs, QVector<QString> & alts);
     QVector<QPair<QString, QString > > FetchExamples(const QString & word, const QString & from, const QString & to );

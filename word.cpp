@@ -65,7 +65,7 @@ bool Word::TrySound( bool play)
     {
         t_sound = Globals::g_path_word_files +  GetHashString() + ".mp3";
         if(!check_file.exists())
-            if(!Globals::g_delivery_boy.FetchSound( m_value, m_lang_from, t_sound ))
+            if(!Globals::g_delivery_boy->FetchSound( m_value, m_lang_from, t_sound ))
                 return false;
     }
 
@@ -74,7 +74,12 @@ bool Word::TrySound( bool play)
     return true;
 }
 
-QJsonObject Word::ToJSONObject() const
+Word::operator const QString&() const
+{
+    return m_value;
+}
+
+Word::operator QJsonObject () const
 {
     QJsonObject res;
     res["word"] = m_value;
@@ -96,11 +101,6 @@ QJsonObject Word::ToJSONObject() const
         res["definitions"] = dfns;
     }
     return res;
-}
-
-Word::operator const QString&() const
-{
-    return m_value;
 }
 
 QString Word::GetHashString()

@@ -9,7 +9,7 @@ QString                       Globals::g_path_word_files;
 QString                       Globals::g_path_program_data;
 QScopedPointer<AddNewWord>    Globals::g_add_new_word;
 QScopedPointer<Dictionary>    Globals::g_dictionary;
-DeliveryBoy                   Globals::g_delivery_boy;
+QScopedPointer<DeliveryBoy>   Globals::g_delivery_boy;
 QScopedPointer<TrayIcon>      Globals::g_tray_icon;
 QScopedPointer<TrainerWindow> Globals::g_main_window;
 QScopedPointer<Settings>      Globals::g_settings;
@@ -29,6 +29,7 @@ void Globals::Initialize()
     if(!QDir(g_path_word_files).exists())
         QDir().mkdir(g_path_word_files);
 
+    g_delivery_boy.reset(new DeliveryBoy);
     g_settings.reset(new Settings());
     g_add_new_word.reset(new AddNewWord);
     g_settings->Load();

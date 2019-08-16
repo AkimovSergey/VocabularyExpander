@@ -11,29 +11,21 @@
 #endif
 
 
-int writer(char *data, size_t size, size_t nmemb,
-                  std::string *writerData)
-{
-    if (writerData == NULL)
-    return 0;
 
-    writerData->append(data, size*nmemb);
-
-    return size * nmemb;
-};
-
-DeliveryBoy::DeliveryBoy()
+DeliveryBoy::DeliveryBoy(QObject*)
 {
     curl_global_init(CURL_GLOBAL_ALL);
-
+    QObject::connect(&manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onFinished(QNetworkReply*)));
 }
 
-DeliveryBoy::~DeliveryBoy()
+void DeliveryBoy::onFinished(QNetworkReply* reply)
 {
+
     curl_global_cleanup();
+
 }
 
-QString DeliveryBoy::FetchWord( const QString & word, const QString & from, const QString & to)
+QSharedPointer<Word> DeliveryBoy::FetchWord( const QString  word, const QString  from, const QString  to)
 {
     CURL *curl;
 
@@ -58,7 +50,25 @@ QString DeliveryBoy::FetchWord( const QString & word, const QString & from, cons
 
     //if(result.empty())
         return "";
+=======
+    /*std::map<QString, QString> t_map = {{"ru", "russian"}, {"en", "english"}};
+    auto req = QString("https://context.reverso.net/translation/%1-%2/%3").arg(t_map[from], t_map[to], word);
+    QUrl url = QUrl::fromEncoded(req.toLocal8Bit());
+    QNetworkRequest request(req);
+    request.setRawHeader("User-Agent", "MyOwnBrowser 1.0");
+    QNetworkReply *reply(manager.get(request));
+    QEventLoop loop;
+    QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    auto m = reply->error();
+    auto e = reply->readAll();
+    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    qDebug(reply->readAll());*/
+    //while(!reply->readyRead()) QThread::sleep(1);
+    //QByteArray newData = reply->read(1000000);
+    //qDebug() << newData << endl;
+>>>>>>> Stashed changes
 }
+
 
 /*int64_t GetTKKFromGoogle(CURL * curl)
 {

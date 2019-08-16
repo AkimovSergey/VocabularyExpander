@@ -14,7 +14,8 @@ class TrainerWindow : public QDialog
 
 public:
     explicit TrainerWindow(QWidget *parent = nullptr);
-    ~TrainerWindow();
+    ~TrainerWindow() override;
+    void keyPressEvent(QKeyEvent * e) override;
 
 
 public slots:
@@ -27,7 +28,7 @@ private:
     Coach             m_coach;
 
 protected:
-    void closeEvent(QCloseEvent * event);
+    void closeEvent(QCloseEvent * event) override;
 };
 
 #endif // TRAINERWINDOW_H

@@ -15,6 +15,7 @@ public:
 
     Word(const QJsonObject &json);
     operator const QString&()const;
+    operator QJsonObject () const;
     Word&							operator++();
     Word&							operator--();
     bool                            operator==(const Word & rhs){return rhs.m_value == m_value;}
@@ -24,7 +25,6 @@ public:
     void                  Dispose();
     QString               GetTranslation(){return m_value_trans;};
     bool                  TrySound(bool play);
-    QJsonObject           ToJSONObject() const;
     size_t                GetOrder(){return m_order;}
     QString               GetWordValue()const {return m_value;}
     QString               GetHashString();

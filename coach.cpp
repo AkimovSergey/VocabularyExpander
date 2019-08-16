@@ -15,7 +15,7 @@ bool Coach::StartExercise()
     auto & gdic = Globals::g_dictionary->GetDictionary();
 	if(!gdic.size()) return false;
 
-    size_t count = std::min(Globals::g_settings->GetValue<int>(SETTINGS_NUMBER_OF_WORDS_IN_EXERCISE), gdic.size());
+    size_t count = std::min(Globals::g_settings->GetValue<int>(SETTINGS_AMOUNT_OF_WORDS_IN_EXERCISE), gdic.size());
 
     time_t now = QDateTime::currentSecsSinceEpoch();
 	size_t atteption_complete = Globals::g_settings->GetCachedAttemptToComplete();
@@ -23,7 +23,7 @@ bool Coach::StartExercise()
     if(!FillRandomWithCmp(count, [=](const QSharedPointer<Word> & ptr){ return ptr->IsForced(); }))
 	{
 		size_t filled_by_forced = m_exercise_set.size();
-        size_t cnt = std::min(Globals::g_settings->GetValue<int>(SETTINGS_NUMBER_OF_WORDS_TO_LEARN), gdic.size());
+        size_t cnt = std::min(Globals::g_settings->GetValue<int>(SETTINGS_AMOUNT_OF_WORDS_TO_LEARN), gdic.size());
 
 		if(!FillRandomWithCmp(cnt, std::bind(&Coach::IsReadyToContinue, this, now, atteption_complete, std::placeholders::_1)))
             FillRandomWithCmp(cnt, [=](const QSharedPointer<Word> & ptr){

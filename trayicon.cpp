@@ -25,7 +25,7 @@ void TrayIcon::Start()
 
     auto add_flash_card_Action = new QAction(QIcon(":res/resources/add.png"), "Add flash card", this);
     connect(add_flash_card_Action, &QAction::triggered, this, [=](){
-        Globals::g_add_new_word->exec();
+        Globals::g_add_new_word->show();
     });
     menu->addAction(add_flash_card_Action);
 

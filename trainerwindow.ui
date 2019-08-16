@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>383</width>
+    <width>433</width>
     <height>247</height>
    </rect>
   </property>
@@ -36,6 +36,9 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <property name="spacing">
+    <number>4</number>
+   </property>
    <item row="2" column="5">
     <widget class="QPushButton" name="bt_sound">
      <property name="minimumSize">
@@ -211,6 +214,9 @@
      </property>
      <property name="text">
       <string>Check</string>
+     </property>
+     <property name="default">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

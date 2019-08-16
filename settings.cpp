@@ -37,8 +37,8 @@ Settings::Settings(QWidget *parent):  QDialog(parent),
     ui(new Ui::Settings), m_settings{{SETTINGS_IS_EXERCISE_ACTIVE , false},
                                      {SETTINGS_USE_DEFAULT_DIR_FOR_DIC, true},
                                      {SETTINGS_SUCCESSFUL_ATTEPTS_TO_COMPLETE , 8},
-                                     {SETTINGS_NUMBER_OF_WORDS_IN_EXERCISE, 10},
-                                     {SETTINGS_NUMBER_OF_WORDS_TO_LEARN, 30},
+                                     {SETTINGS_AMOUNT_OF_WORDS_IN_EXERCISE, 10},
+                                     {SETTINGS_AMOUNT_OF_WORDS_TO_LEARN, 30},
                                      {SETTINGS_CHECK_WHOLE_WORD, true},
                                      {SETTINGS_REPEAT_EXERCISE_TIME, 40}}
 {
@@ -97,6 +97,13 @@ QString Settings::GetUserDictionaryDirectoryOrDefault()
 
 void Settings::closeEvent(QCloseEvent *)
 {
+    SetValue<int>(SETTINGS_REPEAT_EXERCISE_TIME, ui->sc_repeat_exercise_time->value());
+    SetValue<int>(SETTINGS_AMOUNT_OF_WORDS_IN_EXERCISE, ui->sc_amount_of_words_in_exercise->value());
+    SetValue<int>(SETTINGS_AMOUNT_OF_WORDS_TO_LEARN, ui->sc_amount_of_words_to_learn->value());
+    SetValue<int>(SETTINGS_SUCCESSFUL_ATTEPTS_TO_COMPLETE, ui->sc_successful_attempts_to_complete->value());
+    SetValue<bool>(SETTINGS_CHECK_WHOLE_WORD, ui->cb_check_whole_word->isChecked());
+    SetValue<bool>(SETTINGS_USE_SOUND_TO_CHECK, ui->cb_use_sound_to_check->isChecked());
+    SetValue<bool>(SETTINGS_USE_DEFAULT_DIR_FOR_DIC, ui->cb_use_default_dir_for_dic->isChecked());
     Save();
 }
 
@@ -136,7 +143,7 @@ void Settings::on_bt_choose_directory_clicked()
     }
     else
     {
-       if(QFileInfo(prev + DICTIONARY_FN).exists())
+       if(QFileInfo(res + DICTIONARY_FN).exists())
        {
            if((QMessageBox::No == QMessageBox::question(this, "Question", "New folder already has the dictionary.\r\n"
                "Do you want to load dictionary from this directory (YES) or replace with current dictionary? (NO)", QMessageBox::Yes | QMessageBox::No)))

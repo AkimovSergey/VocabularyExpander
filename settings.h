@@ -14,8 +14,8 @@
 #define SETTINGS_UNIQ_INSTANCE_ID                  "uniq_instance_id"
 // configs in window
 #define SETTINGS_REPEAT_EXERCISE_TIME              "repeat_exercise_time"
-#define SETTINGS_NUMBER_OF_WORDS_TO_LEARN          "amount_of_words_to_learn"
-#define SETTINGS_NUMBER_OF_WORDS_IN_EXERCISE       "amount_of_words_in_exercise"
+#define SETTINGS_AMOUNT_OF_WORDS_TO_LEARN          "amount_of_words_to_learn"
+#define SETTINGS_AMOUNT_OF_WORDS_IN_EXERCISE       "amount_of_words_in_exercise"
 #define SETTINGS_EXCERCISE_CHECK_WAY               "exercise_check_way"
 #define SETTINGS_CHECK_WHOLE_WORD                  "check_whole_word"
 #define SETTINGS_USE_SOUND_TO_CHECK                "use_sound_to_check"

@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QDebug>
+#include <QThread>
 #include "trainerwindow.h"
 #include "deliveryboy.h"
 #include "trayicon.h"
@@ -16,7 +17,7 @@ class Globals
 public:
     static QString                       g_path_word_files;
     static QString                       g_path_program_data;
-    static DeliveryBoy                   g_delivery_boy;
+    static QScopedPointer<DeliveryBoy>   g_delivery_boy;
     static QString                       g_lang_choises[];
     static QScopedPointer<TrayIcon>      g_tray_icon;
     static QScopedPointer<TrainerWindow> g_main_window;
@@ -35,6 +36,13 @@ public:
     static void                          StartExerciseThread();
     // need for test purposes
     static time_t                        GetCurrentTime();
+
+    static void AboutToQuit()
+    {
+        g_exercise_thread->exit();
+        //g_exercise_timer->stop();
+        g_exercise_thread->wait();
+    }
 };
 
 #endif // GLOBALS_H

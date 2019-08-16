@@ -7,6 +7,8 @@ AddNewWord::AddNewWord(QWidget *parent) :
     ui(new Ui::AddNewWord)
 {
     ui->setupUi(this);
+    ui->cb_from->addItems({"en", "ru"});
+    ui->cb_to->addItems({"ru", "en"});
 }
 
 AddNewWord::~AddNewWord()
@@ -16,5 +18,7 @@ AddNewWord::~AddNewWord()
 
 void AddNewWord::on_bt_translate_clicked()
 {
-    Globals::g_delivery_boy.FetchWord(ui->tb_from->toPlainText(), ui->cb_from->currentText(), ui->cb_to->currentText());
+
+    Globals::g_delivery_boy->FetchWord(ui->tb_from->toPlainText(), ui->cb_from->currentText(), ui->cb_to->currentText());
+
 }

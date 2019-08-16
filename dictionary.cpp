@@ -89,6 +89,18 @@ void Dictionary::LoadDictionary()
 
 void Dictionary::SaveDictionary()
 {
+    QJsonArray e_array;
+    auto t_dir_path = Globals::g_settings->GetUserDictionaryDirectoryOrDefault();
+    if(t_dir_path.isEmpty()) return;
+    QString t_dictionary_path =  t_dir_path + DICTIONARY_FN;
+
+    for(QSharedPointer<Word> & wrd : m_dictionary)
+        e_array.append((QJsonObject)*wrd);
+
+    QJsonDocument json(e_array);
+    QFile jsonFile(t_dictionary_path);
+    jsonFile.open(QFile::WriteOnly);
+    jsonFile.write(json.toJson());
 
 }
 
@@ -128,11 +140,10 @@ void Dictionary::LoadExercises()
 
 void Dictionary::SaveExercises()
 {
-    auto t_settings_full_path = Globals::g_path_program_data + "settings.json";
     QJsonArray e_array;
-    auto t_file_path = Globals::g_settings->GetUserDictionaryDirectoryOrDefault();
-    if(t_file_path.isEmpty()) return;
-    QString t_exercises_path =  t_file_path + EXERCISES_FN;
+    auto t_dir_path = Globals::g_settings->GetUserDictionaryDirectoryOrDefault();
+    if(t_dir_path.isEmpty()) return;
+    QString t_exercises_path =  t_dir_path + EXERCISES_FN;
 
     for(auto & c : m_dictionary)
     {
@@ -149,7 +160,7 @@ void Dictionary::SaveExercises()
     }
 
     QJsonDocument json(e_array);
-    QFile jsonFile(t_settings_full_path);
+    QFile jsonFile(t_exercises_path);
     jsonFile.open(QFile::WriteOnly);
     jsonFile.write(json.toJson());
 
