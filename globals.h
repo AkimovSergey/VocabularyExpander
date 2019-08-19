@@ -19,14 +19,14 @@ public:
     static QString                       g_path_program_data;
     static QScopedPointer<DeliveryBoy>   g_delivery_boy;
     static QString                       g_lang_choises[];
-    static QScopedPointer<TrayIcon>      g_tray_icon;
     static QScopedPointer<TrainerWindow> g_main_window;
-    static QScopedPointer<Settings>      g_settings;
     static QScopedPointer<Dictionary>    g_dictionary;
     static QScopedPointer<AddNewWord>    g_add_new_word;
     static QTimer *                      g_exercise_timer;
     static QScopedPointer<QThread>       g_exercise_thread;
     static Player                        g_player;
+    static QScopedPointer<Settings>      g_settings;
+    static QScopedPointer<TrayIcon>      g_tray_icon;
     static bool                          g_unloading;
     static void                          Initialize();
     static void                          DisplayError(QString err);
@@ -42,6 +42,7 @@ public:
         g_exercise_thread->exit();
         //g_exercise_timer->stop();
         g_exercise_thread->wait();
+        g_main_window.reset();
     }
 };
 

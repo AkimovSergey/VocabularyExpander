@@ -18,7 +18,7 @@ bool Coach::StartExercise()
     size_t count = std::min(Globals::g_settings->GetValue<int>(SETTINGS_AMOUNT_OF_WORDS_IN_EXERCISE), gdic.size());
 
     time_t now = QDateTime::currentSecsSinceEpoch();
-	size_t atteption_complete = Globals::g_settings->GetCachedAttemptToComplete();
+    size_t atteption_complete = Globals::g_settings->GetValue<int>(SETTINGS_SUCCESSFUL_ATTEPTS_TO_COMPLETE);
 
     if(!FillRandomWithCmp(count, [=](const QSharedPointer<Word> & ptr){ return ptr->IsForced(); }))
 	{
@@ -49,7 +49,7 @@ bool Coach::StartExercise()
 
 bool Coach::IsReadyToContinue( const time_t & now, size_t attps, const QSharedPointer<Word> & wrd)
 {
-	auto & gdic = Globals::g_dictionary->GetDictionary();
+    auto & gdic = Globals::g_dictionary->GetDictionary();
 
 		if (wrd->m_learned_count != LEARNED_COUNT_NOT_STARTED_YET)
 		{
@@ -79,8 +79,8 @@ bool Coach::IsReadyToContinue( const time_t & now, size_t attps, const QSharedPo
 bool Coach::FillRandomWithCmp(size_t num, std::function<bool(const QSharedPointer<Word>&)> cmp)
 {
     srand(unsigned(time(nullptr)));
-	auto & gdic = Globals::g_dictionary->GetDictionary();
-	int atteption_complete = Globals::g_settings->GetCachedAttemptToComplete();
+    auto & gdic = Globals::g_dictionary->GetDictionary();
+    int atteption_complete = Globals::g_settings->GetValue<int>(SETTINGS_SUCCESSFUL_ATTEPTS_TO_COMPLETE);
 
     while (m_exercise_set.size() < num)
 	{
@@ -228,7 +228,7 @@ bool Coach::CheckAnswer(QString ans)
 			res = false;
 		}
 		// need to check full word
-        else if (IsLastTryForWord() && Globals::g_settings->GetValue<bool>(SETTINGS_CHECK_WHOLE_WORD))
+        else if (Globals::g_settings->GetValue<bool>(SETTINGS_CHECK_WHOLE_WORD))
 		{
 			if(res = (val == ans))
 				++(*wrd);
@@ -266,7 +266,7 @@ bool Coach::CheckAnswer(QString ans)
 
 bool Coach::IsLastTryForWord()
 {
-	return GetCurrentWord()->GetLearnedCount() == (Globals::g_settings->GetCachedAttemptToComplete() - 1);
+    return GetCurrentWord()->GetLearnedCount() == (Globals::g_settings->GetValue<int>(SETTINGS_SUCCESSFUL_ATTEPTS_TO_COMPLETE) - 1);
 }
 
 QSharedPointer<Word> Coach::GetCurrentWord()

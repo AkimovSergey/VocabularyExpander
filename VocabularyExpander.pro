@@ -66,8 +66,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     resources.qrc
 
-LIBS += \
-    $$PWD\external_libs\curl\lib/libcurl.lib \
+unix: LIBS += -lcurl
+win32: LIBS += $$PWD\external_libs\curl\lib/libcurl.lib \
     -lws2_32 \
     -ladvapi32 \
     -lcrypt32 \

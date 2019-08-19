@@ -68,6 +68,16 @@ void Settings::UpdateView()
     ui->bt_choose_directory->setEnabled(!chkd);
     ui->st_dic_dir_value->setEnabled(!chkd);
     ui->st_dic_dir_value->setText(GetValue<QString>(SETTINGS_DIC_DIR));
+    ui->sc_repeat_exercise_time->setValue(GetValue<int>(SETTINGS_REPEAT_EXERCISE_TIME));
+    ui->sc_amount_of_words_in_exercise->setValue(GetValue<int>(SETTINGS_AMOUNT_OF_WORDS_IN_EXERCISE));
+    ui->sc_amount_of_words_to_learn->setValue(GetValue<int>(SETTINGS_AMOUNT_OF_WORDS_TO_LEARN));
+    ui->sc_successful_attempts_to_complete->setValue(GetValue<int>(SETTINGS_SUCCESSFUL_ATTEPTS_TO_COMPLETE));
+    if(GetValue<bool>(SETTINGS_CHECK_WHOLE_WORD))
+        ui->cb_check_whole_word->setCheckState(Qt::Checked);
+    if(GetValue<bool>(SETTINGS_USE_SOUND_TO_CHECK))
+        ui->cb_use_sound_to_check->setCheckState(Qt::Checked);
+    if(GetValue<bool>(SETTINGS_USE_DEFAULT_DIR_FOR_DIC))
+        ui->cb_use_default_dir_for_dic->setCheckState(Qt::Checked);
 }
 
 void Settings::Save()
@@ -77,15 +87,6 @@ void Settings::Save()
     jsonFile.open(QFile::WriteOnly);
     QJsonDocument json = QJsonDocument::fromVariant(m_settings);
     jsonFile.write(json.toJson());
-}
-
-int Settings::GetCachedAttemptToComplete()
-{
-    /*if(m_cached_attempt_to_complete == 0 )
-        m_cached_attempt_to_complete = GetDefValueInt(_SETTINGS_SUCCESSFUL_ATTEPTS_TO_COMPLETE);*/
-
-    return m_cached_attempt_to_complete;
-
 }
 
 QString Settings::GetUserDictionaryDirectoryOrDefault()

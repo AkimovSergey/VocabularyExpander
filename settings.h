@@ -52,7 +52,6 @@ public:
     }
     template<class T>
     T GetValue(const char * name);
-    int GetCachedAttemptToComplete();
     QString GetUserDictionaryDirectoryOrDefault();
 
 private slots:
@@ -60,7 +59,6 @@ private slots:
     void on_cb_use_default_dir_for_dic_stateChanged(int arg1);
 
 private:
-    int                                m_cached_attempt_to_complete;
     void InitializeDefaults();
     void UpdateView();
     QVariantMap    m_settings;

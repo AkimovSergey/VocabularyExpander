@@ -8,12 +8,12 @@
 #include "word.h"
 
 
-class DeliveryBoy: public QObject
+class DeliveryBoy
 {
-    Q_OBJECT
 
 public:
     explicit DeliveryBoy(QObject* parent = 0);
+    ~DeliveryBoy();
     QSharedPointer<Word>FetchWord(const QString  word, const QString  from, const QString  to );
     bool FetchSound(const QString & word, const QString & from, const QString & path_to_save );
     bool FetchTranslation(QString & word, QString & from, QString & to, QString & trans, QVector<QString> & defs, QVector<QString> & alts);

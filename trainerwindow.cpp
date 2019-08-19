@@ -11,7 +11,8 @@ TrainerWindow::TrainerWindow(QWidget *parent) :
 
 TrainerWindow::~TrainerWindow()
 {
-    delete ui;
+    if(ui)
+        delete ui;
 }
 
 void TrainerWindow::StartExercise()
