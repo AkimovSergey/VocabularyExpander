@@ -7,6 +7,7 @@ TrainerWindow::TrainerWindow(QWidget *parent) :
     ui(new Ui::TrainerWindow)
 {
     ui->setupUi(this);
+    ui->tb_from->installEventFilter(this);
 }
 
 TrainerWindow::~TrainerWindow()
@@ -29,11 +30,19 @@ void TrainerWindow::closeEvent(QCloseEvent * event)
     Globals::g_dictionary->SaveExercises();
 }
 
-void TrainerWindow::keyPressEvent(QKeyEvent * e)
+bool TrainerWindow::eventFilter(QObject* o, QEvent* e)
 {
-    on_bt_check_clicked();
+   if(e->type() == QEvent::KeyPress)
+   {
+      QKeyEvent* eventKey = static_cast<QKeyEvent*>(e);
+      if(eventKey->key() == Qt::Key_Return)
+      {
+         on_bt_check_clicked();
+         return true;
+      }
+   }
+   return o->eventFilter(o, e);
 }
-
 void TrainerWindow::on_bt_check_clicked()
 {
     QPalette palette = ui->tb_from->palette();

@@ -42,7 +42,9 @@ public:
         g_exercise_thread->exit();
         //g_exercise_timer->stop();
         g_exercise_thread->wait();
+        g_dictionary.reset();
         g_main_window.reset();
+
     }
 };
 

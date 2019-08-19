@@ -15,15 +15,13 @@ class TrainerWindow : public QDialog
 public:
     explicit TrainerWindow(QWidget *parent = nullptr);
     ~TrainerWindow() override;
-    void keyPressEvent(QKeyEvent * e) override;
-
-
 public slots:
     void StartExercise();
 private slots:
     void on_bt_check_clicked();
 
 private:
+    bool eventFilter(QObject* o, QEvent* e);
     Ui::TrainerWindow *ui;
     Coach             m_coach;
 
