@@ -55,7 +55,6 @@ FORMS += \
     trainerwindow.ui \
     dictionary.ui \
     settings.ui \
-    newword.ui \
     addnewword.ui
 
 # Default rules for deployment.

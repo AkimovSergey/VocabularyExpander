@@ -24,6 +24,7 @@ public:
     ~Dictionary();
     size_t GetDictionarySize(){return m_dictionary.length();}
     const QList<QSharedPointer<Word>> GetDictionary(){return m_dictionary;}
+    void AddWord(Word && wrd);
     void Load();
     void SaveExercises();
 

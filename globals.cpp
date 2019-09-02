@@ -16,6 +16,7 @@ QScopedPointer<QThread>       Globals::g_exercise_thread;
 QTimer *                      Globals::g_exercise_timer;
 QScopedPointer<Settings>      Globals::g_settings;
 QScopedPointer<TrayIcon>      Globals::g_tray_icon;
+QStringList const             Globals::g_lang_choises = {"en", "ru"};
 
 void Globals::Initialize()
 {

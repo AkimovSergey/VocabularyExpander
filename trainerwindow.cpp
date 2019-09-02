@@ -8,12 +8,12 @@ TrainerWindow::TrainerWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->tb_from->installEventFilter(this);
+    SetProgresslabel();
 }
 
 TrainerWindow::~TrainerWindow()
 {
-    if(ui)
-        delete ui;
+    delete ui;
 }
 
 void TrainerWindow::StartExercise()
@@ -22,7 +22,6 @@ void TrainerWindow::StartExercise()
     ui->bt_check->setText("Next");
     on_bt_check_clicked();
     exec();
-
 }
 
 void TrainerWindow::closeEvent(QCloseEvent * event)
@@ -67,6 +66,20 @@ void TrainerWindow::on_bt_check_clicked()
         ui->tb_from->setPalette(palette);
         ui->tb_from->clear();
         ui->tb_to->setText(m_coach.ValueToTranslate());
+        m_progress_label->setText(m_coach.GetCurrentProgress());
         ui->bt_check->setText("Check");
     }
 }
+
+
+void TrainerWindow::SetProgresslabel()
+{
+    static const int width = 48;
+    static const int height = 24;
+    m_progress_label = new QLabel("nope", ui->tb_from);
+    // just put manually position
+    // have to be installed in resizing
+    m_progress_label->setGeometry(170, 45, width, height);
+    m_progress_label->show();
+}
+

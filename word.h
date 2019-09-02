@@ -14,6 +14,9 @@ public:
     friend class Coach;
 
     Word(const QJsonObject &json);
+    Word(Word &&) = default;
+    Word(const QString value, const QString trans, QString from, QString to,
+         const QVector<QString> alt, const QVector<QPair<QString, QString>> expls);
     operator const QString&()const;
     operator QJsonObject () const;
     Word&							operator++();

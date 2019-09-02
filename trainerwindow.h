@@ -2,6 +2,7 @@
 #define TRAINERWINDOW_H
 
 #include <QDialog>
+#include <QLabel>
 #include "coach.h"
 
 namespace Ui {
@@ -19,11 +20,12 @@ public slots:
     void StartExercise();
 private slots:
     void on_bt_check_clicked();
-
 private:
     bool eventFilter(QObject* o, QEvent* e);
-    Ui::TrainerWindow *ui;
-    Coach             m_coach;
+    void SetProgresslabel();
+    Ui::TrainerWindow* ui;
+    Coach              m_coach;
+    QLabel*            m_progress_label;
 
 protected:
     void closeEvent(QCloseEvent * event) override;

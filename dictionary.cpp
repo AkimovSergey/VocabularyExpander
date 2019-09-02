@@ -21,6 +21,11 @@ Dictionary::~Dictionary()
     delete ui;
 }
 
+void Dictionary::AddWord(Word && wrd)
+{
+    m_dictionary.append(QSharedPointer<Word>(new Word(std::move(wrd))));
+}
+
 void Dictionary::InitAndFill()
 {
     static QStringList horizontalHeader = {"Frc", "State", "Value", "From", "Translation", "To"};

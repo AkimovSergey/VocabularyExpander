@@ -18,7 +18,7 @@ public:
     static QString                       g_path_word_files;
     static QString                       g_path_program_data;
     static QScopedPointer<DeliveryBoy>   g_delivery_boy;
-    static QString                       g_lang_choises[];
+    static const QStringList             g_lang_choises;
     static QScopedPointer<TrainerWindow> g_main_window;
     static QScopedPointer<Dictionary>    g_dictionary;
     static QScopedPointer<AddNewWord>    g_add_new_word;
