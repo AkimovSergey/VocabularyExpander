@@ -35,7 +35,6 @@ SOURCES += \
     settings.cpp \
     dictionary.cpp \
     player.cpp \
-    newword.cpp \
     addnewword.cpp
 
 HEADERS += \
@@ -48,7 +47,6 @@ HEADERS += \
     settings.h \
     dictionary.h \
     player.h \
-    newword.h \
     addnewword.h
 
 FORMS += \
