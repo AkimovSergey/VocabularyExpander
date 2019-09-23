@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <random>
 #include <QDateTime>
+#include <time.h>
 
 
 bool Coach::StartExercise()
@@ -17,7 +18,7 @@ bool Coach::StartExercise()
 
     size_t count = std::min(Globals::g_settings->GetValue<int>(SETTINGS_AMOUNT_OF_WORDS_IN_EXERCISE), gdic.size());
 
-    time_t now = QDateTime::currentSecsSinceEpoch();
+    time_t now = QDateTime::currentMSecsSinceEpoch()/1000;
     size_t atteption_complete = Globals::g_settings->GetValue<int>(SETTINGS_SUCCESSFUL_ATTEPTS_TO_COMPLETE);
 
     if(!FillRandomWithCmp(count, [=](const QSharedPointer<Word> & ptr){ return ptr->IsForced(); }))
@@ -275,7 +276,7 @@ QSharedPointer<Word> Coach::GetCurrentWord()
 		return m_exercise_set.back(); 
 	if(m_penalty_set.size() > 0)
 		return m_penalty_set.back(); 
-	return 0;
+    return {};
 }
 
 QString Coach::GetCurrentProgress()

@@ -2,6 +2,7 @@
 #define WORD_H
 
 #include <QJsonObject>
+#include <QPair>
 #include <QVector>
 #include <vector>
 
@@ -14,7 +15,7 @@ public:
     friend class Coach;
 
     Word(const QJsonObject &json);
-    Word(Word &&) = default;
+    Word(Word && w) = default;
     Word(const QString value, const QString trans, QString from, QString to,
          const QVector<QString> alt, const QVector<QPair<QString, QString>> expls);
     operator const QString&()const;
