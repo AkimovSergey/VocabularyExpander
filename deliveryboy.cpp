@@ -1,22 +1,26 @@
 #include "deliveryboy.h"
 #include "globals.h"
 #include "settings.h"
+#include <optional>
 #include <QString>
 #include <QVector>
+#include <regex>
 #define CURL_STATICLIB
 #if defined(WIN32) && !defined(UNIX)
 #include "external_libs/curl/include/curl.h"
 #else
 #include <curl/curl.h>
+
+#include <QRegularExpression>
 #endif
 
 int writer(char *data, size_t size, size_t nmemb,
-                  std::string *writerData)
+                  QString *writerData)
 {
     if (writerData == NULL)
-    return 0;
-
-    writerData->append(data, size*nmemb);
+        return 0;
+    data[size*nmemb] = 0;
+    writerData->append(data);
 
     return size * nmemb;
 };
@@ -33,28 +37,95 @@ DeliveryBoy::~DeliveryBoy()
 
 }
 
-QSharedPointer<Word> DeliveryBoy::FetchWord( const QString  word, const QString  from, const QString  to)
+std::optional<QSharedPointer<Word>> DeliveryBoy::FetchWord( const QString  word, const QString  from, const QString  to)
 {
     CURL *curl;
-
+    QMap<QString, QString> mp = {{"en", "english"}, {"ru", "russian"}};
     curl = curl_easy_init();
-    std::string result;
+    QString result;
     if(curl)
     {
-
-
-        std::string rqst = std::string("https://context.reverso.net/translation/russian-english/%D0%B3%D0%B5%D0%BD%D0%B5%D1%80%D0%B0%D0%BB");
-
-        //std::string rqst = std::string("translate.google.com/translate_tts?tl=") + frm + "&q=" + wrd;
-
+        auto rqst = (QString("https://context.reverso.net/translation/%0-%1/%2").arg(mp[from], mp[to], QUrl().toPercentEncoding(word))).toUtf8();
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writer);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result);
-        curl_easy_setopt(curl, CURLOPT_URL, rqst.c_str());
+        curl_easy_setopt(curl, CURLOPT_URL, rqst.data());
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
 
-        auto r = curl_easy_perform(curl);
+        curl_easy_perform(curl);
+        if(result.isEmpty())
+            return {};
+        qDebug() << result;
+        return WebResultToWord(result);
+
     }
     return {};
+}
+
+std::optional<QSharedPointer<Word>>DeliveryBoy::WebResultToWord(const QString & result)
+{
+    QVector<QString> alts;
+    const std::string s = result.toStdString();
+    std::regex rgx("title=\"[Noun|Adjective|Verb]\\w*\"><\\/span>[\\s]+<\\/div>[\\s]+(.*)(<\\/a>|<\\/div>)");
+    std::smatch match;
+
+    std::string::const_iterator search_start( s.cbegin() );
+    while (std::regex_search(search_start, s.end(), match, rgx))
+    {
+        qDebug() << match[1].str().c_str();
+        search_start = match.suffix().first;
+        alts.push_back(match[1].str().c_str());
+    }
+
+    auto expls = ExtractExplsFromWebResult(result);
+
+    return {};
+}
+
+QVector<QPair<QString, QString>> DeliveryBoy::ExtractExplsFromWebResult(const QString & result)
+{
+ /*QString r;
+    QRegularExpression re("<div class=\"trg ltr\">[\\s]+<span class=\"icon jump-right\"><\\/span>[\\s]+<span class=\"text\" lang='ru'>([\\S\\s.]+)<\\/div>",QRegularExpression::DotMatchesEverythingOption);
+    QRegularExpressionMatch mch = re.match(result);
+    if (mch.hasMatch()) {
+        int startOffset = mch.capturedStart(1); // startOffset == 6
+        int endOffset = mch.capturedEnd(1); // endOffset == 9
+        r = result.mid(startOffset, endOffset - startOffset);
+        qDebug()<<r;
+    }*/
+
+
+    QVector<QPair<QString, QString>> res;
+    const std::string s = result.toStdString();
+    std::regex rgx("<div class=\"src ltr\">[\\s]+<span class=\"text\">[\\s]+(.*)<\\/span>[\\s]+<\\/div>");
+    std::smatch match;
+    // just take max 4 examples
+    int count = 4;
+    std::string::const_iterator search_start( s.cbegin() );
+    while (std::regex_search(search_start, s.end(), match, rgx) && count--)
+    {
+        qDebug() << match[1].str().c_str();
+        res.push_back({match[1].str().c_str(), {}});
+        search_start = match.suffix().first;
+    }
+    // looking for translations
+    search_start = s.cbegin();
+    std::regex rgx_tr("<div class=\"trg ltr\">[\\s]+<span class=\"icon jump-right\"><\\/span>[\\s]+<span class=\"text\" lang='ru'>[\\s.]+(.*)<\\/span>");
+    for( auto & it : res)
+    {
+        if(std::regex_search(search_start, s.end(), match, rgx_tr))
+        {
+            std::string rt = match[1].str().c_str();
+            std::regex rem_a("<\\/?a[^>]*>");
+            rt = std::regex_replace(rt,rem_a,"");
+            qDebug() << rt.c_str();
+            search_start = match.suffix().first;
+        }
+    }
+
+
+
+
+    return res;
 }
 
 
@@ -280,8 +351,8 @@ bool DeliveryBoy::FetchSound(const QString & word, const QString & from, const Q
  return true;
 }
 
-bool DeliveryBoy::FetchTranslation(QString & word, QString & from, QString & to, QString & trans, QVector<QString> & defs, QVector<QString> & alts)
-{
+//bool DeliveryBoy::FetchTranslation(QString & word, QString & from, QString & to, QString & trans, QVector<QString> & defs, QVector<QString> & alts)
+//{
     /*std::string result;
 
     UpdateInstallationCount(true, from, to);
@@ -355,10 +426,10 @@ bool DeliveryBoy::FetchTranslation(QString & word, QString & from, QString & to,
                 return false;
             }
         }
-    }*/
+    }
 
-    return true;
-}
+   // return true;
+}*/
 
 void DeliveryBoy::UpdateInstallationCount( bool how, QString from, QString to)
 {
