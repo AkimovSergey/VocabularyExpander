@@ -3,6 +3,7 @@
 
 #include <QJsonObject>
 #include <QPair>
+#include <QSet>
 #include <QVector>
 #include <vector>
 
@@ -16,8 +17,9 @@ public:
 
     Word(const QJsonObject &json);
     Word(Word && w) = default;
-    Word(const QString value, const QString trans, QString from, QString to,
-         const QVector<QString> alt, const QVector<QPair<QString, QString>> expls);
+    Word(const QString & value, const QString & trans, const QString & from, const QString & to,
+         const QSet<QString> & alt, const QVector<QPair<QString, QString>> & expls);
+    Word(const QString & value, const QString & from, const QString & to);
     operator const QString&()const;
     operator QJsonObject () const;
     Word&							operator++();
@@ -37,7 +39,7 @@ public:
     QString               GetLangTo()const{return m_lang_to;}
     time_t                GetLastSuccesfulExrciseTime()const {return m_last_time;}
     QVector<QString> &    GetMeanings(){ return m_meanings; }
-    QVector<QString> &    GetAlternatives(){ return m_alternative_trans; }
+    QSet<QString> &       GetAlternatives(){ return m_alternative_trans; }
     QVector<QPair<QString, QString> > & GetExamples(){ return m_examples;};
     bool                  HasMeanings()const { return m_meanings.size() > 0; }
     bool                  HasAlternatives()const { return m_alternative_trans.size() > 0; }
@@ -47,16 +49,18 @@ public:
     bool                  IsCompletelyEqual(const Word & wrd);
     QString               GetProgressAsString();
     size_t                GetProgressPercentage(size_t amount_of_try);
-
+    void                  SetAlts(QSet<QString> atrs){m_alternative_trans = atrs;}
+    void                  SetTranslation(QString trans){m_value_trans = trans;}
+    void                  SetExpls(QVector<QPair<QString,QString>> expls){m_examples = expls;};
 
 private:
     QString                        m_value;
     QString                        m_value_trans;
     QVector<QString>               m_meanings;
-    QVector<QString>               m_alternative_trans;
+    QString                        m_lang_to;
+    QSet<QString>                  m_alternative_trans;
     QVector<QPair<QString, QString> > m_examples;
     QString                        m_lang_from;
-    QString                        m_lang_to;
     int                            m_learned_count;
     time_t                         m_last_time;
     bool                           m_forced;

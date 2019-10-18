@@ -44,10 +44,16 @@ Word::Word(const QJsonObject &json)
     }
 }
 
-Word::Word(const QString value, const QString trans, const QString from, const QString to,
-     const QVector<QString> alt, const QVector<QPair<QString, QString>> expls):
+Word::Word(const QString & value, const QString & trans, const QString & from, const QString & to,
+     const QSet<QString> & alt, const QVector<QPair<QString, QString>> & expls):
     m_value(value), m_value_trans(trans), m_lang_from(from), m_lang_to(to),
     m_alternative_trans(alt), m_examples(expls)
+{
+
+}
+
+Word::Word(const QString & value, const QString & from, const QString & to):
+    m_value(value), m_lang_from(from), m_lang_to(to)
 {
 
 }

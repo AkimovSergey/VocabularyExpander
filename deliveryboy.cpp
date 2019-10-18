@@ -37,15 +37,16 @@ DeliveryBoy::~DeliveryBoy()
 
 }
 
-std::optional<QSharedPointer<Word>> DeliveryBoy::FetchWord( const QString  word, const QString  from, const QString  to)
+void DeliveryBoy::FetchWord( QSharedPointer<Word> & wrd)
 {
     CURL *curl;
-    QMap<QString, QString> mp = {{"en", "english"}, {"ru", "russian"}};
+    QMap<QString, QString> mp = {{wrd->GetLangFrom(), "english"}, {wrd->GetLangTo(), "russian"}};
     curl = curl_easy_init();
     QString result;
     if(curl)
     {
-        auto rqst = (QString("https://context.reverso.net/translation/%0-%1/%2").arg(mp[from], mp[to], QUrl().toPercentEncoding(word))).toUtf8();
+        auto rqst = (QString("https://context.reverso.net/translation/%0-%1/%2").arg(mp[wrd->GetLangFrom()],
+                     mp[wrd->GetLangTo()], QUrl().toPercentEncoding(wrd->GetWordValue()))).toUtf8();
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writer);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result);
         curl_easy_setopt(curl, CURLOPT_URL, rqst.data());
@@ -53,17 +54,14 @@ std::optional<QSharedPointer<Word>> DeliveryBoy::FetchWord( const QString  word,
 
         curl_easy_perform(curl);
         if(result.isEmpty())
-            return {};
-        qDebug() << result;
-        return WebResultToWord(result);
-
+            return;
+        WebResultToWord(result, wrd);
     }
-    return {};
 }
 
-std::optional<QSharedPointer<Word>>DeliveryBoy::WebResultToWord(const QString & result)
+void DeliveryBoy::WebResultToWord(const QString & result, QSharedPointer<Word> & wrd)
 {
-    QVector<QString> alts;
+    QSet<QString> alts;
     const std::string s = result.toStdString();
     std::regex rgx("title=\"[Noun|Adjective|Verb]\\w*\"><\\/span>[\\s]+<\\/div>[\\s]+(.*)(<\\/a>|<\\/div>)");
     std::smatch match;
@@ -73,12 +71,24 @@ std::optional<QSharedPointer<Word>>DeliveryBoy::WebResultToWord(const QString & 
     {
         qDebug() << match[1].str().c_str();
         search_start = match.suffix().first;
-        alts.push_back(match[1].str().c_str());
+        alts.insert(match[1].str().c_str());
     }
 
     auto expls = ExtractExplsFromWebResult(result);
-
-    return {};
+    // extract translation from examples
+    // take first example
+    QString trans;
+    if(expls.size() != 0)
+    {
+        std::regex rgx("<em>(.*)</em>");
+        std::smatch match;
+        if(std::regex_search(expls[0].second.toStdString().cbegin(), s.end(), match, rgx))
+            wrd->SetTranslation(match[1].str().c_str());
+        else
+            return;
+    }
+    wrd->SetAlts(alts);
+    wrd->SetExpls(expls);
 }
 
 QVector<QPair<QString, QString>> DeliveryBoy::ExtractExplsFromWebResult(const QString & result)
@@ -117,14 +127,10 @@ QVector<QPair<QString, QString>> DeliveryBoy::ExtractExplsFromWebResult(const QS
             std::string rt = match[1].str().c_str();
             std::regex rem_a("<\\/?a[^>]*>");
             rt = std::regex_replace(rt,rem_a,"");
-            qDebug() << rt.c_str();
+            it.second = rt.c_str();
             search_start = match.suffix().first;
         }
     }
-
-
-
-
     return res;
 }
 
@@ -609,357 +615,6 @@ QVector<QString> FetchExamplesFromBabla(const QString & word, const QString & fr
     return {""};//result;
 }
 
-void replace_tags(std::string& str)
-{
-    std::string out, tag;
-    bool current_tag_open = false, special_symbol = false;
-    bool begin = true;
-    for( auto c : str )
-    {
-        switch(c)
-        {
-        default:
-            if( begin && c == ' ') break;
-            begin = false;
-            if ( special_symbol ){special_symbol = false; break;}
-            if(!current_tag_open) out += c;
-            else tag += c;
-            break;
-        case '<': tag = c; current_tag_open = true; break;
-        case'>': tag += c;
-            if( tag == "<em>") out += "<b>";
-            if( tag == "</em>") out += "</b>";
-            current_tag_open = false;
-            break;
-        case '\\\\': special_symbol = true; break;
 
-        }
-    }
-
-    str = out;
-}
-
-QVector<QPair<QString, QString> > FetchExamplesFrom_ConextDotReversoNet(const QString & word, const QString & from, const QString & to )
-{
-    /*std::vector<std::pair<wxString, wxString> > result;
-    std::string wrd = (std::string)word.ToUTF8();
-    std::string res, sent;
-    std::string rqst = std::string("http://context.reverso.net/vertaling/nederlands-engels/" + wrd);
-
-    const std::string src_ltr = "<div class=\"src ltr\">";
-    const std::string trg_ltr = "<div class=\"trg ltr\">";
-    const std::string src_txt = "<div class=\"text\">\n";
-
-    auto curl = curl_easy_init();
-    if(curl)
-    {
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writer);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &res);
-        curl_easy_setopt(curl, CURLOPT_URL, rqst.c_str());
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
-
-        auto r = curl_easy_perform(curl);
-        curl_easy_cleanup(curl);
-    }
-
-    if(res.length() > 0)
-    {
-        int cur_pos = 0, pos_end = 0;
-        while(true)
-        {
-            cur_pos = res.find(src_ltr, pos_end);
-            if(std::string::npos == cur_pos)
-                break;
-            cur_pos = res.find(src_txt, cur_pos + src_ltr.length()) + src_txt.length();
-            pos_end = res.find("</div>", cur_pos);
-            if(std::string::npos == pos_end)
-                break;
-
-            sent = res.substr(cur_pos, pos_end - cur_pos);
-            replace_tags(sent);
-
-            result.push_back(std::make_pair(wxString::FromUTF8(sent.c_str()), ""));
-
-            cur_pos = res.find(trg_ltr, pos_end);
-            if(std::string::npos == cur_pos)
-                break;
-            cur_pos = res.find(src_txt, cur_pos + trg_ltr.length()) + src_txt.length();
-            // this div is end of class
-            pos_end = res.find("</div>", cur_pos);
-            if(std::string::npos == pos_end)
-                break;
-            pos_end = res.find("</div>", pos_end + 6);
-            if(std::string::npos == pos_end)
-                break;
-
-
-            sent = res.substr(cur_pos, pos_end - cur_pos);
-            replace_tags(sent);
-
-            result.back().second = wxString::FromUTF8(sent.c_str());
-
-        //<div class="src ltr">
-            //<div class="text">
-            //<div class="trg ltr">
-        }
-
-    }*/
-
-    return {{"",""}};//result;
-
-}
-
-QVector<QPair<QString, QString > > DeliveryBoy::FetchExamples(const QString & word, const QString & from, const QString & to )
-{
-
-/*#ifdef ONLY_DUTCH_BUILD
-
-    //return FetchExamplesFromBabla(word, from, to);
-    return FetchExamplesFrom_ConextDotReversoNet(word, from, to );
-
-#endif
-
-    std::vector<std::pair<wxString, wxString > > result;
-    std::string res;
-    CURL *curl;
-
-    curl = curl_easy_init();
-    if(curl)
-    {
-
-        std::string frm = (std::string)from.ToUTF8();
-        std::string t  = (std::string)to.ToUTF8();
-        std::string wrd = (std::string)word.ToUTF8();
-
-        auto to_delete = curl_easy_escape(curl, frm.c_str(), frm.length());
-        frm = to_delete;
-        curl_free(to_delete);
-        to_delete = curl_easy_escape(curl, wrd.c_str(), wrd.length());
-        wrd = to_delete;
-        curl_free(to_delete);
-        to_delete = curl_easy_escape(curl, t.c_str(), t.length());
-        t = to_delete;
-        curl_free(to_delete);
-
-        std::string rqst = std::string("https://glosbe.com/gapi/tm?from=" + frm + "&dest=" + t + "&format=json&phrase=" +
-            wrd + "&page=1&pretty=true");
-
-        //std::string rqst = std::string("translate.google.com/translate_tts?tl=") + frm + "&q=" + wrd;
-
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writer);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &res);
-        curl_easy_setopt(curl, CURLOPT_URL, rqst.c_str());
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
-
-        auto r = curl_easy_perform(curl);
-        curl_easy_cleanup(curl);
-
-        if(res.length() > 0)
-        {
-            Json::Reader reader;
-            Json::Value root;
-            if(reader.parse(res.c_str(), root, false))
-            {
-                auto items = root["examples"];
-                for(int i = 0; i < items.size() && i < 5; ++i)
-                {
-                    result.push_back(std::make_pair(wxString::FromUTF8(items[i]["first"].asString().c_str()),
-                                     wxString::FromUTF8(items[i]["second"].asString().c_str())));
-                }
-
-
-            }
-        }
-
-
-    }*/
-
-    return {{"",""}};//result;
-
-}
-/*
-
-std::vector<wxString> DeliveryBoy::FetchExamples( const wxString & word)
-{
-    std::vector<wxString> res;
-    std::string result;
-    CURL *curl;
-
-    curl = curl_easy_init();
-    if(curl)
-    {
-        auto wrd = TranslateStringToWebString(curl, word);
-        wxString site;
-        Globals::g_settings->GetValue(_SETTINGS_EXAMPLES_SITE, site);
-
-        std::string request = "www.bing.com/search?q=" + wrd + "+site:" + site.ToStdString();
-
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writer);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result);
-        curl_easy_setopt(curl, CURLOPT_URL, request.c_str());
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
-
-        curl_easy_perform(curl);
-        if(!result.empty())
-        {
-            std::string rg = "<a href=\"(https?://www." + site.ToStdString() + ".*?\.html?)\"";
-            auto pages_list = ExtractLinks(wxString(result), rg);
-
-            size_t max = pages_list.size() > 5 ? 5 : pages_list.size();
-            std::vector<std::shared_ptr<std::thread>> thrds;
-            std::mutex lock;
-
-            for( size_t i = 0; i < max; i++)
-            {
-                thrds.push_back(std::shared_ptr<std::thread>(new std::thread([&]()
-                {
-                auto m = ExtractSentences(pages_list[i], word);
-                    if(m.size() > 0)
-                    {
-                        std::lock_guard<std::mutex> l(lock);
-                        res.insert(res.end(), m.begin(), m.end());
-                    }
-                })));
-            }
-            for( size_t i = 0; i < thrds.size(); i++)
-                thrds[i]->join();
-
-        }
-    }
-
-    return res;
-}
-
-std::vector<std::string> DeliveryBoy::ExtractLinks( wxString & web_page, std::string  reg_ex)
-{
-    std::vector<std::string> res;
-    std::regex e( reg_ex);
-    std::wcmatch m;
-
-
-    auto sstr = web_page.ToStdString();
-
-    std::regex_iterator<std::string::iterator> rit ( sstr.begin(), sstr.end(), e );
-    std::regex_iterator<std::string::iterator> rend;
-    std::regex em ("<.*?>");
-
-    while (rit!=rend)
-    {
-        std::string result;
-        auto ss = (*rit)[1].str();
-        std::regex_replace(std::back_inserter(result), ss.begin(), ss.end(), em, "");
-        res.push_back(std::move(result));
-        ++rit;
-    }
-
-    return res;
-
-}
-
-enum _STAT
-{
-    SENTENCE_BEGIN,
-    BRACKET_OPENED,
-    WORD_FOUND
-
-};
-std::vector<wxString> DeliveryBoy::ExtractSentences( std::string & web, const wxString & word)
-{
-
-    std::vector<wxString> res;
-    std::string response;
-    CURL *curl;
-
-    curl = curl_easy_init();
-    if(curl)
-    {
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writer);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-        curl_easy_setopt(curl, CURLOPT_URL, web.c_str());
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
-
-        curl_easy_perform(curl);
-
-        if(!response.empty())
-        {
-            size_t wpos = 0;
-            size_t s_b_pos = 0, s_e_pos = 0;
-            size_t wcount = 0;
-            size_t length = response.length();
-            std::string wrd = word.ToUTF8();
-
-            while(wxNOT_FOUND != (s_b_pos = wpos = response.find(wrd, s_b_pos)))
-            {
-
-                // check letter before word
-                if(wpos != 1 && (response[wpos - 1] != L' ' &&
-                                response[wpos - 1] != L',' &&
-                                response[wpos - 1] != L'.' &&
-                                response[wpos - 1] != L'>' ))
-                    goto go_out;
-
-                // check letter after word
-
-                s_e_pos = wpos + word.length();
-
-                if(s_e_pos != length && (response[s_e_pos] != L' ' &&
-                                response[s_e_pos] != L',' &&
-                                response[s_e_pos] != L'.' &&
-                                response[s_e_pos] != L'<'))
-                    goto go_out;
-
-
-                // check words in sentence before word
-                while(s_b_pos)
-                {
-                    auto a = response[s_b_pos];
-                    if(response[s_b_pos] == L'<' ||
-                        response[s_b_pos] == L'\\' ||
-                        response[s_b_pos] == L';' ||
-                        response[s_b_pos] == L'=' ||
-                        response[s_b_pos] == L'\n'
-                        )
-                        goto go_out;
-                    else if(response[s_b_pos] == L' ')
-                    {
-                        wcount++;
-                    }
-                    else if(response[s_b_pos] == L'>' || response[s_b_pos] == L'.')
-                        break;
-
-                    s_b_pos--;
-                }
-
-                wchar_t a = response[s_e_pos];
-                // check words in sentence after word
-                while(s_e_pos < length)
-                {
-                    if(response[s_e_pos] == L'<' || response[s_e_pos] == L'.' || response[s_e_pos] == L'>')
-                        break;
-                    else if(response[s_e_pos] == L' ')
-                    {
-                        wcount++;
-                    }
-                    s_e_pos++;
-                }
-
-                if( wcount >= 3 )
-                {
-                    res.push_back(response.substr(++s_b_pos, s_e_pos - s_b_pos));
-                    return res;
-                    s_b_pos = s_e_pos;
-                    wpos = s_e_pos = wcount =0;
-                    continue;
-                }
-
-    go_out:
-                wcount = 0;
-                s_b_pos = wpos + word.length();
-            }
-        }
-    }
-
-    return res;
-}*/
 
 

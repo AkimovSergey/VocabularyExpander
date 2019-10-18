@@ -19,8 +19,19 @@ AddNewWord::~AddNewWord()
 
 void AddNewWord::on_bt_translate_clicked()
 {
-
-    Globals::g_delivery_boy->FetchWord(ui->tb_from->toPlainText(), ui->cb_from->currentText(), ui->cb_to->currentText());
+    QSharedPointer<Word> res(new Word(ui->tb_from->toPlainText(), ui->cb_from->currentText(), ui->cb_to->currentText()));
+    Globals::g_delivery_boy->FetchWord(res);
+    if(!res->GetTranslation().isEmpty())
+    {
+        ui->tb_to->setText(res->GetTranslation());
+        for(auto & it : res->GetAlternatives())
+            ui->tb_synonyms->append(it);
+        for(auto & it : res->GetExamples())
+        {
+            ui->tb_examples->append(it.first);
+            ui->tb_examples->append(it.second);
+        }
+    }
 
 }
 

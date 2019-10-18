@@ -2,6 +2,7 @@
 #define ADDNEWWORD_H
 
 #include <QDialog>
+#include <QSet>
 
 namespace Ui {
 class AddNewWord;
@@ -23,7 +24,7 @@ private:
     Ui::AddNewWord *                 ui;
     QString                          m_value;
     QString                          m_trans;
-    QVector<QString>                 m_alternatives;
+    QSet<QString>                    m_alternatives;
     QVector<QPair<QString, QString>> m_examples;
 
 };
