@@ -20,6 +20,8 @@ public slots:
     void StartExercise();
 private slots:
     void on_bt_check_clicked();
+    void on_bt_examples_clicked();
+
 private:
     bool eventFilter(QObject* o, QEvent* e);
     void SetProgresslabel();

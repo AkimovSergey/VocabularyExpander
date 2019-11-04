@@ -83,3 +83,14 @@ void TrainerWindow::SetProgresslabel()
     m_progress_label->show();
 }
 
+
+void TrainerWindow::on_bt_examples_clicked()
+{
+    auto wrd = m_coach.GetCurrentWord();
+    Globals::g_delivery_boy->FetchExamples(wrd);
+    for(auto & it : wrd->GetExamples())
+    {
+        ui->tb_to->append(it.first);
+        ui->tb_to->append(it.second);
+    }
+}

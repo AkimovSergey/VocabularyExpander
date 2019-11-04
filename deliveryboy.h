@@ -17,7 +17,7 @@ public:
     ~DeliveryBoy();
     void FetchWord( QSharedPointer<Word> & wrd);
     bool FetchSound(const QString & word, const QString & from, const QString & path_to_save );
-    QVector<QPair<QString, QString > > FetchExamples(const QString & word, const QString & from, const QString & to );
+    void FetchExamples(QSharedPointer<Word> wrd);
     void UpdateInstallationCount(bool how, QString from = "", QString to = "");
     QString PostDictionaryServerData(const char * command, const char * data = 0);
 
