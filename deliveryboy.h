@@ -23,7 +23,7 @@ public:
 
 private:
     void WebResultToWord(const QString & result, QSharedPointer<Word> & wrd);
-    QVector<QPair<QString, QString>> ExtractExplsFromWebResult(const QString & result);
+    QVector<QPair<QString, QString>> ExtractExplsFromWebResult(const std::string & result);
 
 };
 

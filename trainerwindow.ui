@@ -28,10 +28,6 @@
   <property name="windowTitle">
    <string>VocabularyExpander</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="resources.qrc">
-    <normaloff>:/res/resources/icon16.bmp</normaloff>:/res/resources/icon16.bmp</iconset>
-  </property>
   <property name="modal">
    <bool>true</bool>
   </property>
@@ -223,8 +219,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

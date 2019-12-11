@@ -71,27 +71,30 @@ void DeliveryBoy::FetchWord( QSharedPointer<Word> & wrd)
 void DeliveryBoy::WebResultToWord(const QString & result, QSharedPointer<Word> & wrd)
 {
     QSet<QString> alts;
-    const std::string s = result.toStdString();
+    const std::string page = result.toStdString();
     std::regex rgx("title=\"[Noun|Adjective|Verb]\\w*\"><\\/span>[\\s]+<\\/div>[\\s]+(.*)(<\\/a>|<\\/div>)");
     std::smatch match;
 
-    std::string::const_iterator search_start( s.cbegin() );
-    while (std::regex_search(search_start, s.end(), match, rgx))
+    std::string::const_iterator search_start( page.cbegin() );
+    while (std::regex_search(search_start, page.end(), match, rgx))
     {
-        qDebug() << match[1].str().c_str();
         search_start = match.suffix().first;
         alts.insert(match[1].str().c_str());
+        // assign first result for a case if we will not find result in examples
+        if(wrd->GetTranslation().isEmpty())
+            wrd->SetTranslation(match[1].str().c_str());
     }
 
-    auto expls = ExtractExplsFromWebResult(result);
+    auto expls = ExtractExplsFromWebResult(page);
     // extract translation from examples
     // take first example
     QString trans;
     if(expls.size() != 0)
     {
+        auto sr = expls[0].second.toStdString();
         std::regex rgx("<b>(.*)</b>");
         std::smatch match;
-        if(std::regex_search(expls[0].second.toStdString().cbegin(), s.end(), match, rgx))
+        if(std::regex_search(sr.cbegin(), sr.cend(), match, rgx))
             wrd->SetTranslation(match[1].str().c_str());
         else
             return;
@@ -100,7 +103,10 @@ void DeliveryBoy::WebResultToWord(const QString & result, QSharedPointer<Word> &
     wrd->SetExpls(expls);
 }
 
-QVector<QPair<QString, QString>> DeliveryBoy::ExtractExplsFromWebResult(const QString & result)
+// define how many examples we want to take from page
+static const int NUMBER_OF_EXAMPLES = 4;
+
+QVector<QPair<QString, QString>> DeliveryBoy::ExtractExplsFromWebResult(const std::string & page)
 {
  /*QString r;
     QRegularExpression re("<div class=\"trg ltr\">[\\s]+<span class=\"icon jump-right\"><\\/span>[\\s]+<span class=\"text\" lang='ru'>([\\S\\s.]+)<\\/div>",QRegularExpression::DotMatchesEverythingOption);
@@ -112,15 +118,12 @@ QVector<QPair<QString, QString>> DeliveryBoy::ExtractExplsFromWebResult(const QS
         qDebug()<<r;
     }*/
 
-    qDebug()<<result;
     QVector<QPair<QString, QString>> res;
-    const std::string s = result.toStdString();
-    std::regex rgx("<div class=\"src ltr\">[\\s]+<span class=\"text\">[\\s]+(.*)<\\/span>[\\s]+<\\/div>");
+    std::regex rgx("<div class=\"src ltr\">[\\s]+<span class=\"text\".*?>[\\s]+(.*)<\\/span>[\\s]+<\\/div>");
     std::smatch match;
-    // just take max 4 examples
-    int count = 4;
-    std::string::const_iterator search_start( s.cbegin() );
-    while (std::regex_search(search_start, s.end(), match, rgx) && count--)
+    int count = NUMBER_OF_EXAMPLES;
+    std::string::const_iterator search_start( page.cbegin() );
+    while (std::regex_search(search_start, page.end(), match, rgx) && count--)
     {
         QString r = match[1].str().c_str();
         r.replace("<em>", "<b>").replace("</em>", "</b>");
@@ -128,11 +131,11 @@ QVector<QPair<QString, QString>> DeliveryBoy::ExtractExplsFromWebResult(const QS
         search_start = match.suffix().first;
     }
     // looking for translations
-    search_start = s.cbegin();
-    std::regex rgx_tr("<div class=\"trg ltr\">[\\s]+<span class=\"icon jump-right\"><\\/span>[\\s]+<span class=\"text\" lang='ru'>[\\s.]+(.*)<\\/span>");
+    search_start = page.cbegin();
+    std::regex rgx_tr("<div class=\"trg ltr\">[\\s]+<span class=\"icon jump-right\"><\\/span>[\\s]+<span class=\"text\".*?>[\\s.]+(.*)<\\/span>");
     for( auto & it : res)
     {
-        if(std::regex_search(search_start, s.end(), match, rgx_tr))
+        if(std::regex_search(search_start, page.cend(), match, rgx_tr))
         {
             std::string rt = match[1].str().c_str();
             std::regex rem_a("<\\/?a[^>]*>");
@@ -159,7 +162,7 @@ void DeliveryBoy::FetchExamples(QSharedPointer<Word> wrd)
     const QString result = FetchWepPage(QString("https://context.reverso.net/translation/%0-%1/%2").arg(mp[wrd->GetLangFrom()],
                      mp[wrd->GetLangTo()], QUrl().toPercentEncoding(wrd->GetWordValue())).toUtf8());
     if(!result.isEmpty())
-        wrd->SetExpls(ExtractExplsFromWebResult(result));
+        wrd->SetExpls(ExtractExplsFromWebResult(result.toStdString()));
 }
 
 

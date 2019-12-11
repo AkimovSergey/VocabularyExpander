@@ -27,12 +27,7 @@ void AddNewWord::on_bt_translate_clicked()
         for(auto & it : res->GetAlternatives())
             ui->tb_synonyms->append(it);
         for(auto & it : res->GetExamples())
-        {
-            ui->tb_examples->append(it.first);
-            ui->tb_examples->append("\n");
-            ui->tb_examples->append(it.second);
-            ui->tb_examples->append("\n");
-        }
+            ui->tb_examples->append(it.first + "\n" + it.second);
     }
 
 }
