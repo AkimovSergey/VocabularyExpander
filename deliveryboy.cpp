@@ -17,13 +17,23 @@
 
 QMap<QString, QString> mp = {{"en", "english"}, {"ru", "russian"}};
 
+template<class T> struct dependent_false : std::false_type {};
+
+template<typename T>
 int writer(char *data, size_t size, size_t nmemb,
-                  QString *writerData)
+                  T *writerData)
 {
     if (writerData == NULL)
         return 0;
-    data[size*nmemb] = 0;
-    writerData->append(data);
+    if constexpr(std::is_same_v<T, QString>)
+    {
+        data[size*nmemb] = 0;
+        writerData->append(data);
+    }
+    else if constexpr(std::is_same_v<T, QVector<uint8_t>>)
+        writerData->insert(writerData->end(), data, data + nmemb);
+    else
+        static_assert(dependent_false<T>::value);
 
     return size * nmemb;
 };
@@ -40,14 +50,15 @@ DeliveryBoy::~DeliveryBoy()
 
 }
 
-QString FetchWepPage(QByteArray rqst)
+template<typename T=QString>
+T FetchWebPage(QByteArray rqst)
 {
     CURL *curl;
     curl = curl_easy_init();
-    QString result;
+    T result;
     if(curl)
     {
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writer);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writer<T>);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result);
         curl_easy_setopt(curl, CURLOPT_URL, rqst.data());
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
@@ -63,7 +74,7 @@ void DeliveryBoy::FetchWord( QSharedPointer<Word> & wrd)
     word.replace(' ', '+');
     QUrlQuery query(QString("https://context.reverso.net/translation/%0-%1/%2").arg(mp[wrd->GetLangFrom()],
                     mp[wrd->GetLangTo()], word));
-    const QString result = FetchWepPage(query.toString(QUrl().FullyEncoded).toUtf8());
+    const QString result = FetchWebPage(query.toString(QUrl().FullyEncoded).toUtf8());
     if(!result.isEmpty())
         WebResultToWord(result, wrd);
 }
@@ -150,16 +161,35 @@ QVector<QPair<QString, QString>> DeliveryBoy::ExtractExplsFromWebResult(const st
 }
 
 
-bool DeliveryBoy::FetchSound(const QString & word, const QString & from, const QString & path_to_save )
+std::optional<QString> FetchSound(const QString & word, const QString & path_to_save)
 {
-
-
- return true;
+    QUrlQuery query("https://freetts.com/Home/PlayAudio?Language=en-US&Voice=Male&TextMessage=test");
+    const QString result = FetchWebPage(query.toString(QUrl().FullyEncoded).toUtf8());
+    const std::string page = result.toStdString();
+    if(result.isEmpty())
+        return {};
+    std::smatch match;
+    std::regex rgx("<source src=\"\\/audio\\/(.*\\.mp3)\" type=\"audio\\/mpeg\" \\/>");
+    if(std::regex_search(page.cbegin(), page.cend(), match, rgx))
+    {
+        QString rt = match[1].str().c_str();
+        QUrlQuery query_("https://freetts.com/audio/" + rt);
+        const auto mp3_data = FetchWebPage<QVector<uint8_t>>(query.toString(QUrl().FullyEncoded).toUtf8());
+        QString file_name = path_to_save + '/' + rt;
+        QFile file(file_name);
+         if (!file.open(QIODevice::WriteOnly))
+             return {};
+         QDataStream out(&file);
+         out << mp3_data;
+         file.close();
+        return {file_name};
+    }
+    return {};
 }
 
 void DeliveryBoy::FetchExamples(QSharedPointer<Word> wrd)
 {
-    const QString result = FetchWepPage(QString("https://context.reverso.net/translation/%0-%1/%2").arg(mp[wrd->GetLangFrom()],
+    const QString result = FetchWebPage(QString("https://context.reverso.net/translation/%0-%1/%2").arg(mp[wrd->GetLangFrom()],
                      mp[wrd->GetLangTo()], QUrl().toPercentEncoding(wrd->GetWordValue())).toUtf8());
     if(!result.isEmpty())
         wrd->SetExpls(ExtractExplsFromWebResult(result.toStdString()));

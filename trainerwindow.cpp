@@ -94,3 +94,8 @@ void TrainerWindow::on_bt_examples_clicked()
         ui->tb_to->append(it.second);
     }
 }
+
+void TrainerWindow::on_bt_sound_clicked()
+{
+    Globals::g_delivery_boy->FetchSound("", "", "");
+}

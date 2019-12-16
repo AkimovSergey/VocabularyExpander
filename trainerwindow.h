@@ -22,6 +22,8 @@ private slots:
     void on_bt_check_clicked();
     void on_bt_examples_clicked();
 
+    void on_bt_sound_clicked();
+
 private:
     bool eventFilter(QObject* o, QEvent* e);
     void SetProgresslabel();
