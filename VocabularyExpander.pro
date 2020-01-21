@@ -64,10 +64,11 @@ RESOURCES += \
     resources.qrc
 
 unix: LIBS += -lcurl
-win32: LIBS += $$PWD\external_libs\curl\lib/libcurl.lib \
-    -lws2_32 \
-    -ladvapi32 \
-    -lcrypt32 \
-    -lwldap32 \
-    -lnormaliz
+
+win32: LIBS += $$PWD\external_libs\curl\lib/libcurl.lib\
+     ws2_32.lib \
+    advapi32.lib \
+    crypt32.lib \
+    wldap32.lib \
+    normaliz.lib
 

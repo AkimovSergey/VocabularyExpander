@@ -5,14 +5,14 @@
 #include <QString>
 #include <QVector>
 #include <regex>
+#include <QUrlQuery>
 #define CURL_STATICLIB
 #if defined(WIN32) && !defined(UNIX)
+#define QT_STRICT_ITERATORS
 #include "external_libs/curl/include/curl.h"
 #else
 #include <curl/curl.h>
-
 #include <QRegularExpression>
-#include <QUrlQuery>
 #endif
 
 QMap<QString, QString> mp = {{"en", "english"}, {"ru", "russian"}};
@@ -30,8 +30,8 @@ int writer(char *data, size_t size, size_t nmemb,
         data[size*nmemb] = 0;
         writerData->append(data);
     }
-    else if constexpr(std::is_same_v<T, QVector<uint8_t>>)
-        writerData->insert(writerData->end(), data, data + nmemb);
+    else if constexpr(std::is_same_v<T, std::vector<uint8_t>>)
+        writerData->insert(writerData->end(), (uint8_t*)data, (uint8_t*)data + nmemb);
     else
         static_assert(dependent_false<T>::value);
 
@@ -56,13 +56,17 @@ T FetchWebPage(QByteArray rqst)
     CURL *curl;
     curl = curl_easy_init();
     T result;
+    char error[4096];
     if(curl)
     {
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writer<T>);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result);
         curl_easy_setopt(curl, CURLOPT_URL, rqst.data());
+        auto ret = curl_easy_setopt(curl, CURLOPT_DEFAULT_PROTOCOL, "https");
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_easy_perform(curl);
+        curl_easy_setopt ( curl, CURLOPT_ERRORBUFFER, error );
+        auto code  = curl_easy_perform(curl);
+        return result;
     }
 
     return result;
@@ -161,7 +165,7 @@ QVector<QPair<QString, QString>> DeliveryBoy::ExtractExplsFromWebResult(const st
 }
 
 
-std::optional<QString> FetchSound(const QString & word, const QString & path_to_save)
+std::optional<QString> DeliveryBoy::FetchSound(const QString & word, const QString & from, const QString & path_to_save)
 {
     QUrlQuery query("https://freetts.com/Home/PlayAudio?Language=en-US&Voice=Male&TextMessage=test");
     const QString result = FetchWebPage(query.toString(QUrl().FullyEncoded).toUtf8());
@@ -174,13 +178,13 @@ std::optional<QString> FetchSound(const QString & word, const QString & path_to_
     {
         QString rt = match[1].str().c_str();
         QUrlQuery query_("https://freetts.com/audio/" + rt);
-        const auto mp3_data = FetchWebPage<QVector<uint8_t>>(query.toString(QUrl().FullyEncoded).toUtf8());
+        const auto mp3_data = FetchWebPage<std::vector<uint8_t>>(query.toString(QUrl().FullyEncoded).toUtf8());
         QString file_name = path_to_save + '/' + rt;
         QFile file(file_name);
          if (!file.open(QIODevice::WriteOnly))
              return {};
          QDataStream out(&file);
-         out << mp3_data;
+         out << QVector<uint8_t>::fromStdVector(mp3_data);
          file.close();
         return {file_name};
     }

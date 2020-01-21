@@ -16,7 +16,7 @@ public:
     explicit DeliveryBoy(QObject* parent = 0);
     ~DeliveryBoy();
     void FetchWord( QSharedPointer<Word> & wrd);
-    std::optional<QString> FetchSound(const QString & word, const QString & path_to_save);
+    std::optional<QString> FetchSound(const QString & word, const QString & from, const QString & path_to_save);
     void FetchExamples(QSharedPointer<Word> wrd);
     void UpdateInstallationCount(bool how, QString from = "", QString to = "");
     QString PostDictionaryServerData(const char * command, const char * data = 0);
